@@ -2,5 +2,17 @@
 
 angular.module('angularDcjsApp').
 
-service 'debug', ()->
-  @test = 'ola'
+service 'Debug', ()->
+  @message = []
+
+  @output = ->
+    @message
+
+  @input = (message)->
+    @message.push message
+    return
+
+  @clear= ()->
+    @message = []
+    return
+  return

@@ -3,15 +3,24 @@
 		<h2>Angular Dc Prototype</h2>
 		<p class="lead">This is an Angular Yeoman Project</p>
 	</div>
-	<div class="col-xs-12 col-md-8">
-		<div gridster="gridsterOpts">
+	<div class="col-xs-16 col-md-12">
+		<div class="row">
+			<div class="col-xs-16 col-md-12">
+			</div>
+			<div class="col-xs-16 col-md-12">
+				<ul class="unstyled">
+					<li ng-repeat="item in debug.output()" ng-bind="item"></li>
+				</ul>
+			</div>
+		</div>
+		<!--<div gridster="gridsterOpts">
 			<ul>
-				<li gridster-item="" row="item.position[0]" col="item.position[1]" size-x="item.size.x" size-y="item.size.y" ng-repeat="item in customItems">
+				<li gridster-item="" row="item.position[0]" col="item.position[1]" size-x="item.size.x" size-y="item.size.y" ng-repeat="item in items" class="box">
 					<h4>
 						Draggin Example {{ $index }}
 					</h4>
 				</li>
 			</ul>
-		</div>
+		</div>-->
 	</div>
 </div>
