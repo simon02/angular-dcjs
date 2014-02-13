@@ -10,7 +10,6 @@
         '$scope': $scope
       });
     }), function() {
-      $scope.list = [];
       return expect($scope.list).toEqual([]);
     });
   });

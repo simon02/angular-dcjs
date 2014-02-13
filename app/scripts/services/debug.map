@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "debug.js",
+  "sourceRoot": "",
+  "sources": [
+    "debug.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,UAAA;CAAA,CAEA,CAEiB,GAFjB,CAAO,EAEU,OAFjB;CAGG,EAAO,CAAP,OAAD;CAHF,EAEiB;CAJjB"
+}

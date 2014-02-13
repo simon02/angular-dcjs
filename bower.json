@@ -17,6 +17,8 @@
     "angular-route": "~1.2.12",
     "angular": "~1.2.12",
     "bootstrap-sass": "~3.0.2",
-    "angular-ui-bootstrap": "~0.10.0"
+    "angular-ui-bootstrap": "~0.10.0",
+    "angular-gridster": "~0.9.5",
+    "dc.js": "~1.6.0"
   }
 }

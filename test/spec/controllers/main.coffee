@@ -9,6 +9,5 @@ describe "Controller:MainController", ()->
     controller = $controller('MainController', {'$scope':$scope})
   ),
   ()->
-    $scope.list = []
 
     expect($scope.list).toEqual([])
