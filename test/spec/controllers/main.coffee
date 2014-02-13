@@ -26,8 +26,11 @@ describe "Controller:MainController", ()->
   afterEach( ()->
     $httpBackend.verifyNoOutstandingExpectation()
     $httpBackend.verifyNoOutstandingRequest()
-
   )
+
+  it "should have array in measures", ()->
+    controller = createController();
+    expect($scope.measures).toEqual jasmine.any(Array)
 
   it "Debug should be loaded", ()->
     controller = createController();
@@ -35,8 +38,8 @@ describe "Controller:MainController", ()->
 
   it "should add an input value", ()->
     controller = createController();
+    $scope.debug.input('Test')
     expect($scope.debug.output().length).toBe 1
-
 
   it "GridsterOpts to equal an Object", ()->
     controller = createController();
@@ -56,3 +59,4 @@ describe "Controller:MainController", ()->
 
   it "should find MEASURES and log them", ()->
     controller = createController();
+    expect($scope.debug.output().length).toBe > 0

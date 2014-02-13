@@ -1,5 +1,5 @@
 [
-  ["DATETIME","MEASURE:Units","MEASURE:Royalty Price","MEASURE:Customer Price","Vendor Identifier","Artist / Show","Title","Label/Studio/Network","Product Type Identifier","Order Id","Postal Code","Customer Identifier","Sale/Return","Customer Currency","Country Code","Royalty Currency","Asset/Content Flavor"  ],
+  ["DATETIME","MEASURE:Units","MEASURE:Royalty Price","MEASURE:Customer Price","Vendor Identifier","Artist / Show","Title","Label/Studio/Network","Product Type Identifier","Order Id","Postal Code","Customer Identifier","Sale/Return","Customer Currency","Country Code","Royalty Currency","Asset/Content Flavor"],
   ["9/27/13","1","3.49","4.99","0144_20121109_MOBZ_HEADHUNTERS","Synnove Macody Lund,Nikolaj Coster-Waldau,Aksel Hennie","Headhunters","Yellow Bird","D","3.00025E+13","755-0076","2021669689","S","USD","CL","USD","HD"  ],
   ["9/24/13","1","1.39","1.99","0099_20120827_MOBZ_AONDA","Max Riemelt,J�_rgen Vogel,Jennifer Ulrich,Jacob Matschenz,Frederick Lau,Christiane Paul","A Onda","Constantin Film Verleih Gmbh","D","2.30024E+13","05443-000","6771567884","S","USD","BR","USD","SD"  ],
   ["9/29/13","1","3.49","4.99","0144_20121109_MOBZ_HEADHUNTERS","Synnove Macody Lund,Nikolaj Coster-Waldau,Aksel Hennie","Headhunters","Yellow Bird","D","7.00012E+13","$","6013738749","S","USD","CO","USD","HD"  ],

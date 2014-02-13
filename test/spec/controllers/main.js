@@ -29,6 +29,11 @@
       $httpBackend.verifyNoOutstandingExpectation();
       return $httpBackend.verifyNoOutstandingRequest();
     });
+    it("should have array in measures", function() {
+      var controller;
+      controller = createController();
+      return expect($scope.measures).toEqual(jasmine.any(Array));
+    });
     it("Debug should be loaded", function() {
       var controller;
       controller = createController();
@@ -37,6 +42,7 @@
     it("should add an input value", function() {
       var controller;
       controller = createController();
+      $scope.debug.input('Test');
       return expect($scope.debug.output().length).toBe(1);
     });
     it("GridsterOpts to equal an Object", function() {
@@ -61,7 +67,8 @@
     });
     return it("should find MEASURES and log them", function() {
       var controller;
-      return controller = createController();
+      controller = createController();
+      return expect($scope.debug.output().length).toBe > 0;
     });
   });
 

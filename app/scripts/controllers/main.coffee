@@ -4,13 +4,31 @@ controller('MainController', ['$scope','Debug','$http',
   ($scope, Debug, $http)->
     $scope.debug = Debug;
 
-    $scope.debug.input("Teste")
+    $scope.measures = []
     $scope.metadata = []
 
     $http.get('sampledata.json').then((response)->
       $scope.metadata = response.data
     )
 
+    $scope.$watch('metadata', (data)->
+      $scope.findMeasures() if data
+    )
+
+    $scope.findMeasures = ()->
+      $scope.debug.clear()
+      items = []
+      if $scope.metadata[0]
+        angular.forEach($scope.metadata[0],(value)->
+          input = value.match(/MEASURE:(.*)/)
+          if input
+            items.push(input[1])
+        )
+        if items.length > 0
+          $scope.debug.input({
+            name:'Measures Available',
+            'items': items
+          })
 
     $scope.gridOpts = {
       margins: [20, 20],

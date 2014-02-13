@@ -3,11 +3,36 @@
   angular.module('angularDcjsApp').controller('MainController', [
     '$scope', 'Debug', '$http', function($scope, Debug, $http) {
       $scope.debug = Debug;
-      $scope.debug.input("Teste");
+      $scope.measures = [];
       $scope.metadata = [];
       $http.get('sampledata.json').then(function(response) {
         return $scope.metadata = response.data;
       });
+      $scope.$watch('metadata', function(data) {
+        if (data) {
+          return $scope.findMeasures();
+        }
+      });
+      $scope.findMeasures = function() {
+        var items;
+        $scope.debug.clear();
+        items = [];
+        if ($scope.metadata[0]) {
+          angular.forEach($scope.metadata[0], function(value) {
+            var input;
+            input = value.match(/MEASURE:(.*)/);
+            if (input) {
+              return items.push(input[1]);
+            }
+          });
+          if (items.length > 0) {
+            return $scope.debug.input({
+              name: 'Measures Available',
+              'items': items
+            });
+          }
+        }
+      };
       $scope.gridOpts = {
         margins: [20, 20],
         draggable: {
