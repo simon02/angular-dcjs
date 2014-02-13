@@ -3,15 +3,16 @@
   "use strict";
   describe("Controller:MainController", function() {
     beforeEach(module('angularDcjsApp'));
-    return it("List should be an array", inject(function($controller, $rootScope) {
+    return it("list should be equal an array", inject(function($controller, $rootScope) {
       var $scope, controller;
       $scope = $rootScope.$new();
-      controller = $controller('MainController', {
+      return controller = $controller('MainController', {
         '$scope': $scope
       });
+    }), function() {
       $scope.list = [];
       return expect($scope.list).toEqual([]);
-    }));
+    });
   });
 
 }).call(this);
