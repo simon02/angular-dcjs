@@ -2,73 +2,88 @@
 (function() {
   "use strict";
   describe("Controller:MainController", function() {
-    var $controller, $httpBackend, $rootScope, $scope, Debug, createController;
+    var $controller, $httpBackend, $rootScope, $scope, Debug, MainController, dataAPI, dataResponse;
     $controller = void 0;
     $rootScope = void 0;
     $scope = void 0;
     Debug = void 0;
-    createController = void 0;
     $httpBackend = void 0;
+    dataAPI = void 0;
+    dataResponse = void 0;
+    MainController = void 0;
     beforeEach(function() {
-      module('angularDcjsApp');
-      inject(function($injector) {
+      return module('angularDcjsApp');
+    });
+    beforeEach(function() {
+      inject(function($injector, _Debug_, _dataAPI_) {
+        Debug = _Debug_;
+        dataAPI = _dataAPI_;
         $rootScope = $injector.get('$rootScope');
         $scope = $rootScope.$new();
-        Debug = $injector.get('Debug');
         $controller = $injector.get('$controller');
         $httpBackend = $injector.get('$httpBackend');
-        createController = function() {
-          return $controller('MainController', {
-            '$scope': $scope,
-            'Debug': Debug
-          });
-        };
+        dataResponse = [["DATETIME:date", "MEASURE: Units", "MEASURE: Royalty Price", "MEASURE: Customer Price", "DIMENSION:Vendor Identifier", "DIMENSION:Title", "DIMENSION:Label/Studio/Network", "DIMENSION:Product Type Identifier", "DIMENSION: Order Id", "DIMENSION:Postal Code", "DIMENSION: Customer Identifier", "DIMENSION:Sale/Return", "DIMENSION:Customer Currency", "DIMENSION:Country Code", "DIMENSION:Royalty Currency", "DIMENSION:Asset/Content Flavor"], ["9/27/13", 1, 3.49, 4.99, "0144_20121109", "Headh", "Yello", "D", "5.02E+09", "49915-2504", 2240000173, "S", "USD", "CL", "USD", "HD"], ["9/24/13", 1, 1.39, 1.99, "0099_20120827", "A Ond", "Const", "D", "2.03E+09", "29284-3466", 1642627348, "S", "USD", "BR", "USD", "SD"]];
+        MainController = $controller('MainController', {
+          '$scope': $scope,
+          'Debug': Debug
+        });
       });
     });
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();
       return $httpBackend.verifyNoOutstandingRequest();
     });
-    it("should have array in measures", function() {
-      var controller;
-      controller = createController();
+    it("should be an array in measures", function() {
       return expect($scope.measures).toEqual(jasmine.any(Array));
     });
     it("Debug should be loaded", function() {
-      var controller;
-      controller = createController();
-      return expect($scope.debug).not.toBeNull;
+      return expect(Debug).not.toBeNull;
+    });
+    it("should call retrieve ", function() {
+      spyOn($scope, 'retrieveData').andCallThrough();
+      $scope.retrieveData();
+      return expect($scope.retrieveData).toHaveBeenCalled();
+    });
+    it("should call identifyHeaders", function() {
+      spyOn($scope, 'identifyHeaders').andCallThrough();
+      $scope.identifyHeaders();
+      return expect($scope.identifyHeaders).toHaveBeenCalled();
+    });
+    it("should call getMeasures", function() {
+      spyOn($scope, 'getMeasures').andCallThrough();
+      $scope.getMeasures();
+      return expect($scope.getMeasures).toHaveBeenCalled();
+    });
+    it("should call log for Measures", function() {
+      spyOn($scope, 'log').andCallThrough();
+      $scope.log();
+      return expect($scope.log).toHaveBeenCalled();
+    });
+    it("should call getDimensions", function() {
+      spyOn($scope, 'getDimensions').andCallThrough();
+      $scope.getDimensions();
+      return expect($scope.getDimensions).toHaveBeenCalled();
+    });
+    it("should call log for Dimensions", function() {
+      spyOn($scope, 'log').andCallThrough();
+      $scope.log();
+      return expect($scope.log).toHaveBeenCalled();
+    });
+    it("should add measures", function() {
+      return expect($scope.measures.length).toBe > 0;
     });
     it("should add an input value", function() {
-      var controller;
-      controller = createController();
-      $scope.debug.input('Test');
-      return expect($scope.debug.output().length).toBe(1);
+      spyOn(Debug, 'input').andCallThrough();
+      Debug.input('Test');
+      return expect(Debug.input).toHaveBeenCalled();
     });
-    it("GridsterOpts to equal an Object", function() {
-      var controller;
-      controller = createController();
-      return expect($scope.gridOpts).toEqual(jasmine.any(Object));
-    });
-    it("Items to equal an Array", function() {
-      var controller;
-      controller = createController();
-      return expect($scope.items).toEqual(jasmine.any(Array));
-    });
-    it("should get the data from backend Mock", function() {
-      var controller;
-      $httpBackend.when('GET', 'sampledata.json').respond(200);
-      return controller = createController();
-    });
-    it("should have array in metadata", function() {
-      var controller;
-      controller = createController();
-      return expect($scope.metadata).toEqual(jasmine.any(Array));
+    it("should call output and get more than one item in array", function() {
+      spyOn(Debug, 'output').andCallThrough();
+      expect(Debug.output().length).toBe > 0;
+      return expect(Debug.output).toHaveBeenCalled();
     });
     return it("should find MEASURES and log them", function() {
-      var controller;
-      controller = createController();
-      return expect($scope.debug.output().length).toBe > 0;
+      return expect(Debug.output().length).toBe > 0;
     });
   });
 

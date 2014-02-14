@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "dataAPI.js",
+  "sourceRoot": "",
+  "sources": [
+    "dataAPI.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;CAAA,CAAA,UAAA;CAAA,CAEA,CAEmB,EAAA,CAFnB,CAAO,EAAP,OAAA;CAGE,EAAW,CAAX,GAAA,EAAW;CACT,EAAO,EAAK,QAAL,IAAA;CADT,IAAW;CAHb,EAEmB;CAJnB"
+}

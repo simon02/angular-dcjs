@@ -5,19 +5,30 @@ describe "Controller:MainController", ()->
   $rootScope = undefined
   $scope = undefined
   Debug = undefined
-  createController = undefined
   $httpBackend = undefined
+  dataAPI = undefined
+  dataResponse = undefined
+  MainController = undefined
+
   beforeEach( ()->
     module('angularDcjsApp')
-    inject(($injector)->
+  )
+
+  beforeEach( ()->
+    inject(($injector, _Debug_, _dataAPI_)->
+      Debug = _Debug_
+      dataAPI = _dataAPI_
       $rootScope = $injector.get('$rootScope')
       $scope = $rootScope.$new()
-      Debug = $injector.get('Debug')
       $controller = $injector.get('$controller')
-      $httpBackend = $injector.get('$httpBackend');
+      $httpBackend = $injector.get('$httpBackend')
+      dataResponse = [
+        ["DATETIME:date", "MEASURE: Units", "MEASURE: Royalty Price", "MEASURE: Customer Price", "DIMENSION:Vendor Identifier", "DIMENSION:Title", "DIMENSION:Label/Studio/Network", "DIMENSION:Product Type Identifier", "DIMENSION: Order Id", "DIMENSION:Postal Code", "DIMENSION: Customer Identifier", "DIMENSION:Sale/Return", "DIMENSION:Customer Currency", "DIMENSION:Country Code", "DIMENSION:Royalty Currency", "DIMENSION:Asset/Content Flavor"],
+        ["9/27/13", 1, 3.49, 4.99, "0144_20121109", "Headh", "Yello", "D", "5.02E+09", "49915-2504", 2240000173, "S", "USD", "CL", "USD", "HD"],
+        ["9/24/13", 1, 1.39, 1.99, "0099_20120827", "A Ond", "Const", "D", "2.03E+09", "29284-3466", 1642627348, "S", "USD", "BR", "USD", "SD"],
+      ]
 
-      createController = ()->
-        return $controller('MainController', {'$scope':$scope, 'Debug': Debug})
+      MainController = $controller('MainController', {'$scope':$scope, 'Debug': Debug})
       return
     )
     return
@@ -28,35 +39,56 @@ describe "Controller:MainController", ()->
     $httpBackend.verifyNoOutstandingRequest()
   )
 
-  it "should have array in measures", ()->
-    controller = createController();
+  it "should be an array in measures", ()->
     expect($scope.measures).toEqual jasmine.any(Array)
 
   it "Debug should be loaded", ()->
-    controller = createController();
-    expect($scope.debug).not.toBeNull
+    expect(Debug).not.toBeNull
+
+  it "should call retrieve ", ()->
+    spyOn($scope,'retrieveData').andCallThrough()
+    $scope.retrieveData()
+    expect($scope.retrieveData).toHaveBeenCalled()
+
+  it "should call identifyHeaders", ()->
+    spyOn($scope,'identifyHeaders').andCallThrough()
+    $scope.identifyHeaders()
+    expect($scope.identifyHeaders).toHaveBeenCalled()
+
+  it "should call getMeasures", ()->
+    spyOn($scope,'getMeasures').andCallThrough()
+    $scope.getMeasures()
+    expect($scope.getMeasures).toHaveBeenCalled()
+
+  it "should call log for Measures", ()->
+    spyOn($scope,'log').andCallThrough()
+    $scope.log()
+    expect($scope.log).toHaveBeenCalled()
+
+  it "should call getDimensions", ()->
+    spyOn($scope,'getDimensions').andCallThrough()
+    $scope.getDimensions()
+    expect($scope.getDimensions).toHaveBeenCalled()
+
+  it "should call log for Dimensions", ()->
+    spyOn($scope,'log').andCallThrough()
+    $scope.log()
+    expect($scope.log).toHaveBeenCalled()
+
+  it "should add measures", ()->
+    expect($scope.measures.length).toBe > 0
+
+
 
   it "should add an input value", ()->
-    controller = createController();
-    $scope.debug.input('Test')
-    expect($scope.debug.output().length).toBe 1
+    spyOn(Debug, 'input').andCallThrough()
+    Debug.input('Test')
+    expect(Debug.input).toHaveBeenCalled()
 
-  it "GridsterOpts to equal an Object", ()->
-    controller = createController();
-    expect($scope.gridOpts).toEqual jasmine.any(Object)
-
-  it "Items to equal an Array", ()->
-    controller = createController();
-    expect($scope.items).toEqual jasmine.any(Array)
-
-  it "should get the data from backend Mock", ()->
-    $httpBackend.when('GET','sampledata.json').respond(200)
-    controller = createController();
-
-  it "should have array in metadata", ()->
-    controller = createController();
-    expect($scope.metadata).toEqual jasmine.any(Array)
+  it "should call output and get more than one item in array", ()->
+    spyOn(Debug, 'output').andCallThrough()
+    expect(Debug.output().length).toBe > 0
+    expect(Debug.output).toHaveBeenCalled()
 
   it "should find MEASURES and log them", ()->
-    controller = createController();
-    expect($scope.debug.output().length).toBe > 0
+    expect(Debug.output().length).toBe > 0

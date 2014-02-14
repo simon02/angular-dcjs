@@ -14,7 +14,7 @@
 					</div>
 					<div class="panel-body">
 						<ul class="list-unstyled">
-							<li ng-repeat="item in debug.message">
+							<li ng-repeat="item in getLog()">
 								<span ng-bind="item.name"></span>
 								<ul>
 									<li ng-repeat="lista in item.items">
@@ -27,7 +27,7 @@
 				</div>
 			</div>
 		</div>
-		<div gridster="gridsterOpts">
+		<div gridster="gridOpts">
 			<ul>
 				<li gridster-item="" row="item.position[0]" col="item.position[1]" size-x="item.size.x" size-y="item.size.y" ng-repeat="item in items" class="box">
 					<h4>

@@ -1,57 +1,59 @@
 angular.module('angularDcjsApp').
 
-controller('MainController', ['$scope','Debug','$http',
-  ($scope, Debug, $http)->
-    $scope.debug = Debug;
+controller('MainController', ['$scope','Debug','dataAPI',
+  ($scope, Debug, dataAPI)=>
 
     $scope.measures = []
-    $scope.metadata = []
+    $scope.dimensions = []
 
-    $http.get('sampledata.json').then((response)->
-      $scope.metadata = response.data
-    )
+    $scope.log = (value)=>
+      Debug.input(value)
 
-    $scope.$watch('metadata', (data)->
-      $scope.findMeasures() if data
-    )
+    $scope.getLog = ()->
+      return Debug.output()
 
-    $scope.findMeasures = ()->
-      $scope.debug.clear()
+    $scope.retrieveData = ()->
+      dataAPI.getData().then((response)->
+        $scope.identifyHeaders(response.data)
+        return
+      )
+      return
+
+    $scope.identifyHeaders = (data) =>
+      $scope.getMeasures(data)
+      $scope.getDimensions(data)
+
+
+    $scope.getDimensions = (data)=>
       items = []
-      if $scope.metadata[0]
-        angular.forEach($scope.metadata[0],(value)->
+      if data
+        angular.forEach(data[0],(value)=>
+          input = value.match(/DIMENSION:(.*)/)
+          if input
+            items.push(input[1])
+        )
+        if items.length > 0
+          $scope.measures = items
+          $scope.log({
+            name:'Dimensions',
+            'items': items
+          })
+
+    $scope.getMeasures= (data)=>
+      items = []
+      if data
+        angular.forEach(data[0],(value)=>
           input = value.match(/MEASURE:(.*)/)
           if input
             items.push(input[1])
         )
         if items.length > 0
-          $scope.debug.input({
-            name:'Measures Available',
+          $scope.dimensions = items
+          $scope.log({
+            name:'Measures',
             'items': items
           })
 
-    $scope.gridOpts = {
-      margins: [20, 20],
-      draggable: {
-        enabled: true
-      },
-      resizable: {
-        enabled: false
-      }
-    }
-
-    $scope.items = [
-      { sizeX: 2, sizeY: 1, row: 0, col: 0 },
-      { sizeX: 2, sizeY: 2, row: 0, col: 2 },
-      { sizeX: 1, sizeY: 1, row: 0, col: 4 },
-      { sizeX: 1, sizeY: 1, row: 0, col: 5 },
-      { sizeX: 2, sizeY: 1, row: 1, col: 0 },
-      { sizeX: 1, sizeY: 1, row: 1, col: 4 },
-      { sizeX: 1, sizeY: 2, row: 1, col: 5 },
-      { sizeX: 1, sizeY: 1, row: 2, col: 0 },
-      { sizeX: 2, sizeY: 1, row: 2, col: 1 },
-      { sizeX: 1, sizeY: 1, row: 2, col: 3 },
-      { sizeX: 1, sizeY: 1, row: 2, col: 4 }
-    ];
+    $scope.retrieveData()
 
 ])
