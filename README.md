@@ -20,16 +20,14 @@ at the applciation path ./angular-dcjs
 
 NodeJS, Yeoman (Yo , Grunt &  Bower), Compass - a Ruby gem
 
-__
-
-Nodejs
+*Nodejs
 
 http://nodejs.org/download/
 
 ...Or on OSX homebrew
 >brew install node
 
-Compass - Optional module for Sass
+*Compass - Optional module for Sass
 
 update your Ruby gem app and repo.
 >gem update --system
@@ -37,9 +35,8 @@ update your Ruby gem app and repo.
 install compass
 >sudo gem install compass
 
-Yeoman - the node package manager should fetch its dependencies Bower and Grunt.
+*Yeoman - the node package manager should fetch its dependencies Bower and Grunt.
 >npm install -g yo
-
 
 In case you have issues you can install Bower and Grunt
 >sudo npm install -g bower
