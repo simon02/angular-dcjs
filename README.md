@@ -32,7 +32,8 @@ http://nodejs.org/download/
 update your Ruby gem app and repo.
 >gem update --system
 
-install compass
+Must install Sass First Since Compass is asking for a version os sass which doesn't work.
+>sudo gem install sass
 >sudo gem install compass
 
 *Yeoman - the node package manager should fetch its dependencies Bower and Grunt.
