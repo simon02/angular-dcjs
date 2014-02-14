@@ -19,6 +19,7 @@
     "bootstrap-sass": "3",
     "angular-ui-bootstrap": "~0.10.0",
     "angular-gridster": "~0.9.5",
-    "dc.js": "~1.6.0"
+    "dc.js": "~1.6.0",
+    "underscore": "~1.6.0"
   }
 }

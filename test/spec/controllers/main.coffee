@@ -50,6 +50,10 @@ describe "Controller:MainController", ()->
     $scope.retrieveData()
     expect($scope.retrieveData).toHaveBeenCalled()
 
+  it "should populate rows", ()->
+    $scope.rows = dataResponse
+    expect($scope.rows).toEqual jasmine.any(Array)
+
   it "should call identifyHeaders", ()->
     spyOn($scope,'identifyHeaders').andCallThrough()
     $scope.identifyHeaders()

@@ -14,6 +14,7 @@ controller('MainController', ['$scope','Debug','dataAPI',
 
     $scope.retrieveData = ()->
       dataAPI.getData().then((response)->
+        $scope.rows = response.data
         $scope.identifyHeaders(response.data)
         return
       )

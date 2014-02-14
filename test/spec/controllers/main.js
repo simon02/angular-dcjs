@@ -44,6 +44,10 @@
       $scope.retrieveData();
       return expect($scope.retrieveData).toHaveBeenCalled();
     });
+    it("should populate rows", function() {
+      $scope.rows = dataResponse;
+      return expect($scope.rows).toEqual(jasmine.any(Array));
+    });
     it("should call identifyHeaders", function() {
       spyOn($scope, 'identifyHeaders').andCallThrough();
       $scope.identifyHeaders();

@@ -14,6 +14,7 @@
       };
       $scope.retrieveData = function() {
         dataAPI.getData().then(function(response) {
+          $scope.rows = response.data;
           $scope.identifyHeaders(response.data);
         });
       };
