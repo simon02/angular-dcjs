@@ -13,11 +13,16 @@ controller('MainController', ['$scope','Debug','dataAPI',
       return Debug.output()
 
     $scope.retrieveData = ()->
-      dataAPI.getData().then((response)->
+      d3.csv('sampledata.csv', (response)->
+        $scope.$apply(()->
+          $scope.rows = crossfilter(response)
+        )
+      )
+      ###dataAPI.getData().then((response)->
         $scope.rows = response.data
         $scope.identifyHeaders(response.data)
         return
-      )
+      )###
       return
 
     $scope.identifyHeaders = (data) =>

@@ -13,10 +13,18 @@
         return Debug.output();
       };
       $scope.retrieveData = function() {
-        dataAPI.getData().then(function(response) {
-          $scope.rows = response.data;
-          $scope.identifyHeaders(response.data);
+        d3.csv('sampledata.csv', function(response) {
+          return $scope.$apply(function() {
+            return $scope.rows = crossfilter(response);
+          });
         });
+        /*dataAPI.getData().then((response)->
+          $scope.rows = response.data
+          $scope.identifyHeaders(response.data)
+          return
+        )
+        */
+
       };
       $scope.identifyHeaders = function(data) {
         $scope.getMeasures(data);
