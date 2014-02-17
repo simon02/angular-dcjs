@@ -1,6 +1,10 @@
 {
   "name": "angular-dcjs",
   "version": "0.0.0",
+  "repository" :
+  { "type" : "git"
+  , "url" : "http://github.com/keyscores/angular-dcjs"
+  },
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
