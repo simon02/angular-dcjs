@@ -26,8 +26,7 @@
         $scope.create = function() {
           var dateDimensions, groups, maxDate, minDate, totalSum;
           $scope.data.forEach(function(d) {
-            d['DATETIME:date'] = parseDate(d['DATETIME:date']);
-            d['DATETIME:date'].toISOString();
+            d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
           });
           groups = crossfilter($scope.data);
           dateDimensions = groups.dimension(function(d) {
@@ -38,7 +37,7 @@
           });
           minDate = dateDimensions.bottom(1)[0]['DATETIME:date'];
           maxDate = dateDimensions.top(1)[0]['DATETIME:date'];
-          $scope.dcLineChart.width(500).height(250).dimension(dateDimensions).group(totalSum, "Price").x(d3.time.scale().domain([minDate, maxDate])).yAxisLabel("Total").xAxisLabel("Data");
+          $scope.dcLineChart.width(700).height(250).dimension(dateDimensions).group(totalSum, "Price").x(d3.time.scale().domain([minDate, maxDate])).yAxisLabel("Total").xAxisLabel("Data");
           dc.renderAll();
         };
       }

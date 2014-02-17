@@ -26,8 +26,7 @@ directive "dcLine", ($compile)->
 
     $scope.create = ()=>
       $scope.data.forEach((d)->
-        d['DATETIME:date'] = parseDate(d['DATETIME:date'])
-        d['DATETIME:date'].toISOString()
+        d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
         return
       )
 
@@ -43,7 +42,7 @@ directive "dcLine", ($compile)->
       maxDate = dateDimensions.top(1)[0]['DATETIME:date']
 
       $scope.dcLineChart.
-        width(500).
+        width(700).
         height(250).
         dimension(dateDimensions).
         group(totalSum, "Price").
