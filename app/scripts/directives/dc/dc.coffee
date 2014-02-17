@@ -1,0 +1,1 @@
+angular.module "dcModule", ['dcLine','dcPie','dcModule.templates']

@@ -2,7 +2,8 @@
 (function() {
   "use strict";
   angular.module('dcModule.templates', []).run(function($templateCache) {
-    $templateCache.put("dc/line/template.html", "<div>" + "<h4>Line Chart</h4>" + "<div id='dcLine' class='line-chart'>" + "</div>" + "</div>");
+    $templateCache.put("dc/line/template.html", "<div id='{{ chartId }}' class='line-chart'>" + "</div>");
+    $templateCache.put("dc/pie/template.html", "<div id='{{ chartId }}' class='pie-chart'>" + "</div>");
   });
 
 }).call(this);

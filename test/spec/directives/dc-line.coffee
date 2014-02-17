@@ -1,6 +1,6 @@
 "use strict"
 
-describe "Directive: Dc", ()->
+describe "Directive: Dc-Line", ()->
 
   scope = undefined
   element = undefined

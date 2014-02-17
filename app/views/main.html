@@ -26,7 +26,16 @@
 			</div>
 			<div class="col-xs-16 col-md-12">
 				<h2>Charts</h2>
-				<div dc-line data="rows" dimensions="['DATETIME','MEASURE:Customer Price']"></div>
+				<div class="row">
+					<div class="cols-xs-8 col-md-6">
+						<h4>LineChart</h4>
+						<div id="dcLine" dc-line data="rows" height="250" style="display:block;width: 100%;"></div>
+					</div>
+					<div class="cols-xs-8 col-md-6">
+						<h4>PieChart</h4>
+						<div id="dcPie" dc-pie data="rows" height="250" style="display:block;width: 100%;"></div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
