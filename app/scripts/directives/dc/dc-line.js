@@ -14,7 +14,9 @@
       templateUrl: 'dc/line/template.html',
       controller: function($scope, $compile) {},
       link: function($scope, element, attrs) {
-        var _this = this;
+        var parseDate,
+          _this = this;
+        parseDate = d3.time.format("%m/%d/%Y").parse;
         $scope.$watch('data', function(data) {
           if (data) {
             $scope.dcLineChart = dc.lineChart('#dcLine');
@@ -23,6 +25,10 @@
         });
         $scope.create = function() {
           var dateDimensions, groups, maxDate, minDate, totalSum;
+          $scope.data.forEach(function(d) {
+            d['DATETIME:date'] = parseDate(d['DATETIME:date']);
+            d['DATETIME:date'].toISOString();
+          });
           groups = crossfilter($scope.data);
           dateDimensions = groups.dimension(function(d) {
             return d['DATETIME:date'];
@@ -30,9 +36,9 @@
           totalSum = dateDimensions.group().reduceSum(function(d) {
             return d['MEASURE:Customer Price'];
           });
-          minDate = dateDimensions.bottom(1)[0].date;
-          maxDate = dateDimensions.top(1)[0].date;
-          $scope.dcLineChart.width(750).height(200).dimension(dateDimensions).group(totalSum, "Price").x(d3.time.scale().domain([new Date(minDate), new Date(maxDate)])).yAxisLabel("Total").xAxisLabel("Data");
+          minDate = dateDimensions.bottom(1)[0]['DATETIME:date'];
+          maxDate = dateDimensions.top(1)[0]['DATETIME:date'];
+          $scope.dcLineChart.width(500).height(250).dimension(dateDimensions).group(totalSum, "Price").x(d3.time.scale().domain([minDate, maxDate])).yAxisLabel("Total").xAxisLabel("Data");
           dc.renderAll();
         };
       }

@@ -15,6 +15,8 @@ directive "dcLine", ($compile)->
 
   link: ($scope, element, attrs)->
 
+    parseDate = d3.time.format("%m/%d/%Y").parse
+
     $scope.$watch('data', (data)->
       if data
         $scope.dcLineChart = dc.lineChart('#dcLine')
@@ -23,6 +25,12 @@ directive "dcLine", ($compile)->
     )
 
     $scope.create = ()=>
+      $scope.data.forEach((d)->
+        d['DATETIME:date'] = parseDate(d['DATETIME:date'])
+        d['DATETIME:date'].toISOString()
+        return
+      )
+
       groups = crossfilter($scope.data)
       dateDimensions = groups.dimension((d)->
         return d['DATETIME:date']
@@ -31,15 +39,15 @@ directive "dcLine", ($compile)->
         return d['MEASURE:Customer Price']
       )
 
-      minDate = dateDimensions.bottom(1)[0].date
-      maxDate = dateDimensions.top(1)[0].date
+      minDate = dateDimensions.bottom(1)[0]['DATETIME:date']
+      maxDate = dateDimensions.top(1)[0]['DATETIME:date']
 
       $scope.dcLineChart.
-        width(750).
-        height(200).
+        width(500).
+        height(250).
         dimension(dateDimensions).
         group(totalSum, "Price").
-        x(d3.time.scale().domain([new Date(minDate), new Date(maxDate)])).
+        x(d3.time.scale().domain([minDate,maxDate])).
         yAxisLabel("Total").
         xAxisLabel("Data")
 
