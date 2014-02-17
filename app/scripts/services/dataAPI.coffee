@@ -4,5 +4,5 @@ angular.module('angularDcjsApp').
 
 service "dataAPI", ($http, $q)->
   @getData = ->
-    return $http.get('sampledata.json')
+    return $http.get('sampledata2.json')
   return

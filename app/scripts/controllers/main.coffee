@@ -6,57 +6,36 @@ controller('MainController', ['$scope','Debug','dataAPI',
     $scope.measures = []
     $scope.dimensions = []
 
-    $scope.log = (value)=>
-      Debug.input(value)
-
     $scope.getLog = ()->
       return Debug.output()
 
     $scope.retrieveData = ()->
-      d3.csv('sampledata.csv', (response)->
-        $scope.$apply(()->
-          $scope.rows = crossfilter(response)
-        )
-      )
-      ###dataAPI.getData().then((response)->
+      dataAPI.getData().then((response)->
         $scope.rows = response.data
         $scope.identifyHeaders(response.data)
         return
-      )###
+      )
       return
 
     $scope.identifyHeaders = (data) =>
-      $scope.getMeasures(data)
-      $scope.getDimensions(data)
+      $scope.getParams(data, 'Datetime')
+      $scope.getParams(data, 'Dimension')
+      $scope.getParams(data, 'Measure')
 
-
-    $scope.getDimensions = (data)=>
-      items = []
-      if data
-        angular.forEach(data[0],(value)=>
-          input = value.match(/DIMENSION:(.*)/)
+    $scope.getParams = (data, index)=>
+      if data and index
+        items = []
+        pattern = new RegExp(index.toUpperCase() + ':(.*)')
+        angular.forEach(data[0],(value, key)=>
+          input = key.match(pattern)
           if input
             items.push(input[1])
         )
         if items.length > 0
-          $scope.measures = items
-          $scope.log({
-            name:'Dimensions',
-            'items': items
-          })
+          $scope[index] = items
 
-    $scope.getMeasures= (data)=>
-      items = []
-      if data
-        angular.forEach(data[0],(value)=>
-          input = value.match(/MEASURE:(.*)/)
-          if input
-            items.push(input[1])
-        )
-        if items.length > 0
-          $scope.dimensions = items
-          $scope.log({
-            name:'Measures',
+          Debug.input({
+            name: index,
             'items': items
           })
 

@@ -3,7 +3,7 @@
   "use strict";
   angular.module('angularDcjsApp').service("dataAPI", function($http, $q) {
     this.getData = function() {
-      return $http.get('sampledata.json');
+      return $http.get('sampledata2.json');
     };
   });
 

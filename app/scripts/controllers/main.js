@@ -6,65 +6,36 @@
     '$scope', 'Debug', 'dataAPI', function($scope, Debug, dataAPI) {
       $scope.measures = [];
       $scope.dimensions = [];
-      $scope.log = function(value) {
-        return Debug.input(value);
-      };
       $scope.getLog = function() {
         return Debug.output();
       };
       $scope.retrieveData = function() {
-        d3.csv('sampledata.csv', function(response) {
-          return $scope.$apply(function() {
-            return $scope.rows = crossfilter(response);
-          });
+        dataAPI.getData().then(function(response) {
+          $scope.rows = response.data;
+          $scope.identifyHeaders(response.data);
         });
-        /*dataAPI.getData().then((response)->
-          $scope.rows = response.data
-          $scope.identifyHeaders(response.data)
-          return
-        )
-        */
-
       };
       $scope.identifyHeaders = function(data) {
-        $scope.getMeasures(data);
-        return $scope.getDimensions(data);
+        $scope.getParams(data, 'Datetime');
+        $scope.getParams(data, 'Dimension');
+        return $scope.getParams(data, 'Measure');
       };
-      $scope.getDimensions = function(data) {
-        var items;
-        items = [];
-        if (data) {
-          angular.forEach(data[0], function(value) {
+      $scope.getParams = function(data, index) {
+        var items, pattern;
+        if (data && index) {
+          items = [];
+          pattern = new RegExp(index.toUpperCase() + ':(.*)');
+          angular.forEach(data[0], function(value, key) {
             var input;
-            input = value.match(/DIMENSION:(.*)/);
+            input = key.match(pattern);
             if (input) {
               return items.push(input[1]);
             }
           });
           if (items.length > 0) {
-            $scope.measures = items;
-            return $scope.log({
-              name: 'Dimensions',
-              'items': items
-            });
-          }
-        }
-      };
-      $scope.getMeasures = function(data) {
-        var items;
-        items = [];
-        if (data) {
-          angular.forEach(data[0], function(value) {
-            var input;
-            input = value.match(/MEASURE:(.*)/);
-            if (input) {
-              return items.push(input[1]);
-            }
-          });
-          if (items.length > 0) {
-            $scope.dimensions = items;
-            return $scope.log({
-              name: 'Measures',
+            $scope[index] = items;
+            return Debug.input({
+              name: index,
               'items': items
             });
           }

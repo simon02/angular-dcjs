@@ -12,43 +12,29 @@
       },
       transclude: true,
       templateUrl: 'dc/line/template.html',
-      controller: function() {},
-      link: function(scope, element, attrs, controller) {
-        var dcLine, setGroups;
-        setGroups = function() {
-          var item, _i, _len, _ref;
-          scope.groups = {};
-          _ref = scope.dimensions;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            item = _ref[_i];
-            scope.groups[item] = [];
+      controller: function($scope, $compile) {},
+      link: function($scope, element, attrs) {
+        var _this = this;
+        $scope.$watch('data', function(data) {
+          if (data) {
+            $scope.dcLineChart = dc.lineChart('#dcLine');
+            $scope.create();
           }
-          return console.log(scope.groups);
+        });
+        $scope.create = function() {
+          var dateDimensions, groups, maxDate, minDate, totalSum;
+          groups = crossfilter($scope.data);
+          dateDimensions = groups.dimension(function(d) {
+            return d['DATETIME:date'];
+          });
+          totalSum = dateDimensions.group().reduceSum(function(d) {
+            return d['MEASURE:Customer Price'];
+          });
+          minDate = dateDimensions.bottom(1)[0].date;
+          maxDate = dateDimensions.top(1)[0].date;
+          $scope.dcLineChart.width(750).height(200).dimension(dateDimensions).group(totalSum, "Price").x(d3.time.scale().domain([new Date(minDate), new Date(maxDate)])).yAxisLabel("Total").xAxisLabel("Data");
+          dc.renderAll();
         };
-        scope.$watch('data', function(data) {
-          if (data) {
-            data.dimension(function(d) {
-              var item, _i, _len, _ref;
-              _ref = scope.dimensions;
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                item = _ref[_i];
-                scope.groups[item].push(d[item]);
-              }
-            });
-          }
-        });
-        scope.$watch('dimensions', function(data) {
-          if (data) {
-            return setGroups();
-          }
-        });
-        dcLine = dc.lineChart(element[0]);
-        return dcLine.width(250).height(250).margins({
-          top: 40,
-          right: 50,
-          bottom: 30,
-          left: 60
-        }).dimension(scope.groups).group(crimeIncidentByYear, "Total by Year");
       }
     };
   });

@@ -6,7 +6,6 @@ run(($templateCache)->
     "<div>"+
     "<h4>Line Chart</h4>"+
     "<div id='dcLine' class='line-chart'>"+
-    "{{groups | json}}"+
     "</div>"+
     "</div>"
 

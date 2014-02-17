@@ -59,30 +59,31 @@ describe "Controller:MainController", ()->
     $scope.identifyHeaders()
     expect($scope.identifyHeaders).toHaveBeenCalled()
 
-  it "should call getMeasures", ()->
-    spyOn($scope,'getMeasures').andCallThrough()
-    $scope.getMeasures()
-    expect($scope.getMeasures).toHaveBeenCalled()
+  it "should call getParams", ()->
+    spyOn($scope,'getParams').andCallThrough()
+    $scope.getParams()
+    expect($scope.getParams).toHaveBeenCalled()
 
   it "should call log for Measures", ()->
-    spyOn($scope,'log').andCallThrough()
-    $scope.log()
-    expect($scope.log).toHaveBeenCalled()
+    spyOn(Debug,'input').andCallThrough()
+    Debug.input()
+    expect(Debug.input).toHaveBeenCalled()
 
-  it "should call getDimensions", ()->
-    spyOn($scope,'getDimensions').andCallThrough()
-    $scope.getDimensions()
-    expect($scope.getDimensions).toHaveBeenCalled()
+  it "should call getParams", ()->
+    spyOn($scope,'getParams').andCallThrough()
+    $scope.getParams()
+    expect($scope.getParams).toHaveBeenCalled()
 
   it "should call log for Dimensions", ()->
-    spyOn($scope,'log').andCallThrough()
-    $scope.log()
-    expect($scope.log).toHaveBeenCalled()
+    spyOn(Debug,'input').andCallThrough()
+    Debug.input()
+    expect(Debug.input).toHaveBeenCalled()
 
   it "should add measures", ()->
     expect($scope.measures.length).toBe > 0
 
-
+  it "should add dimensions", ()->
+    expect($scope.dimensions.length).toBe > 0
 
   it "should add an input value", ()->
     spyOn(Debug, 'input').andCallThrough()
@@ -93,6 +94,3 @@ describe "Controller:MainController", ()->
     spyOn(Debug, 'output').andCallThrough()
     expect(Debug.output().length).toBe > 0
     expect(Debug.output).toHaveBeenCalled()
-
-  it "should find MEASURES and log them", ()->
-    expect(Debug.output().length).toBe > 0

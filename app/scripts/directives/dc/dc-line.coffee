@@ -10,56 +10,39 @@ directive "dcLine", ($compile)->
     dimensions: '='
   transclude: true
   templateUrl: 'dc/line/template.html'
-  controller: ()->
+  controller: ($scope, $compile)->
 
-  link: (scope, element, attrs, controller)->
 
-    setGroups = ()->
-      scope.groups = {}
-      for item in scope.dimensions
-        scope.groups[item] = []
-      console.log scope.groups
+  link: ($scope, element, attrs)->
 
-    scope.$watch('data', (data)->
+    $scope.$watch('data', (data)->
       if data
-        data.dimension((d)->
-          for item in scope.dimensions
-            scope.groups[item].push(d[item])
-          return
-        )
+        $scope.dcLineChart = dc.lineChart('#dcLine')
+        $scope.create()
         return
     )
 
-    scope.$watch('dimensions',(data)->
-      if data
-        setGroups()
-    )
+    $scope.create = ()=>
+      groups = crossfilter($scope.data)
+      dateDimensions = groups.dimension((d)->
+        return d['DATETIME:date']
+      )
+      totalSum = dateDimensions.group().reduceSum((d)->
+        return d['MEASURE:Customer Price']
+      )
 
-    dcLine = dc.lineChart(element[0])
-    dcLine
-    .width(250)
-    .height(250)
-    .margins({top: 40, right: 50, bottom: 30, left: 60})
-    .dimension(scope.groups)
-    .group(crimeIncidentByYear, "Total by Year")
-#    .valueAccessor((d)->
-#      d.value.nonViolentCrimeAvg;
-#    )
-#    .stack(crimeIncidentByYear, "Violent Crime",
-#      (d)->
-#        return d.value.violentCrimeAvg
-#    )
-#    .x(d3.scale.linear().domain([1997, 2012]))
-#    .renderHorizontalGridLines(true)
-#    .centerBar(true)
-#    .elasticY(true)
-#    .brushOn(false)
-#    .legend(dc.legend().x(250).y(10))
-#    .title((d)->
-#      return d.key
-#      + "\nViolent crime per 100k population: " + Math.round(d.value.violentCrimeAvg)
-#      + "\nNon-Violent crime per 100k population: " + Math.round(d.value.nonViolentCrimeAvg);
-#    )
-#    .xAxis().ticks(5).tickFormat(d3.format("d"))
-#    $compile(element)(dcLine)
+      minDate = dateDimensions.bottom(1)[0].date
+      maxDate = dateDimensions.top(1)[0].date
 
+      $scope.dcLineChart.
+        width(750).
+        height(200).
+        dimension(dateDimensions).
+        group(totalSum, "Price").
+        x(d3.time.scale().domain([new Date(minDate), new Date(maxDate)])).
+        yAxisLabel("Total").
+        xAxisLabel("Data")
+
+      dc.renderAll()
+      return
+    return

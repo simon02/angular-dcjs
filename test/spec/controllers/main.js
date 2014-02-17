@@ -53,41 +53,41 @@
       $scope.identifyHeaders();
       return expect($scope.identifyHeaders).toHaveBeenCalled();
     });
-    it("should call getMeasures", function() {
-      spyOn($scope, 'getMeasures').andCallThrough();
-      $scope.getMeasures();
-      return expect($scope.getMeasures).toHaveBeenCalled();
+    it("should call getParams", function() {
+      spyOn($scope, 'getParams').andCallThrough();
+      $scope.getParams();
+      return expect($scope.getParams).toHaveBeenCalled();
     });
     it("should call log for Measures", function() {
-      spyOn($scope, 'log').andCallThrough();
-      $scope.log();
-      return expect($scope.log).toHaveBeenCalled();
+      spyOn(Debug, 'input').andCallThrough();
+      Debug.input();
+      return expect(Debug.input).toHaveBeenCalled();
     });
-    it("should call getDimensions", function() {
-      spyOn($scope, 'getDimensions').andCallThrough();
-      $scope.getDimensions();
-      return expect($scope.getDimensions).toHaveBeenCalled();
+    it("should call getParams", function() {
+      spyOn($scope, 'getParams').andCallThrough();
+      $scope.getParams();
+      return expect($scope.getParams).toHaveBeenCalled();
     });
     it("should call log for Dimensions", function() {
-      spyOn($scope, 'log').andCallThrough();
-      $scope.log();
-      return expect($scope.log).toHaveBeenCalled();
+      spyOn(Debug, 'input').andCallThrough();
+      Debug.input();
+      return expect(Debug.input).toHaveBeenCalled();
     });
     it("should add measures", function() {
       return expect($scope.measures.length).toBe > 0;
+    });
+    it("should add dimensions", function() {
+      return expect($scope.dimensions.length).toBe > 0;
     });
     it("should add an input value", function() {
       spyOn(Debug, 'input').andCallThrough();
       Debug.input('Test');
       return expect(Debug.input).toHaveBeenCalled();
     });
-    it("should call output and get more than one item in array", function() {
+    return it("should call output and get more than one item in array", function() {
       spyOn(Debug, 'output').andCallThrough();
       expect(Debug.output().length).toBe > 0;
       return expect(Debug.output).toHaveBeenCalled();
-    });
-    return it("should find MEASURES and log them", function() {
-      return expect(Debug.output().length).toBe > 0;
     });
   });
 

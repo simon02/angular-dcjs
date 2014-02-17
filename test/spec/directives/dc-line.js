@@ -15,6 +15,112 @@
     });
     beforeEach(inject(function($rootScope) {
       scope = $rootScope.$new();
+      scope.data = [
+        {
+          "DATETIME:date": "9/27/13",
+          "MEASURE:Units": 1,
+          "MEASURE:Royalty Price": 3.49,
+          "MEASURE:Customer Price": 4.99,
+          "DIMENSION:Vendor Identifier": "0144_20121109",
+          "DIMENSION:Title": "Headh",
+          "DIMENSION:Label/Studio/Network": "Yello",
+          "DIMENSION:Product Type Identifier": "D",
+          "DIMENSION:Order Id": "5.02E+09",
+          "DIMENSION:Postal Code": "49915-2504",
+          "DIMENSION:Customer Identifier": 2240000173,
+          "DIMENSION:Sale/Return": "S",
+          "DIMENSION:Customer Currency": "USD",
+          "DIMENSION:Country Code": "CL",
+          "DIMENSION:Royalty Currency": "USD",
+          "DIMENSION:Asset/Content Flavor": "HD"
+        }, {
+          "DATETIME:date": "9/24/13",
+          "MEASURE:Units": 1,
+          "MEASURE:Royalty Price": 1.39,
+          "MEASURE:Customer Price": 1.99,
+          "DIMENSION:Vendor Identifier": "0099_20120827",
+          "DIMENSION:Title": "A Ond",
+          "DIMENSION:Label/Studio/Network": "Const",
+          "DIMENSION:Product Type Identifier": "D",
+          "DIMENSION:Order Id": "2.03E+09",
+          "DIMENSION:Postal Code": "29284-3466",
+          "DIMENSION:Customer Identifier": 1642627348,
+          "DIMENSION:Sale/Return": "S",
+          "DIMENSION:Customer Currency": "USD",
+          "DIMENSION:Country Code": "BR",
+          "DIMENSION:Royalty Currency": "USD",
+          "DIMENSION:Asset/Content Flavor": "SD"
+        }, {
+          "DATETIME:date": "9/29/13",
+          "MEASURE:Units": 1,
+          "MEASURE:Royalty Price": 3.49,
+          "MEASURE:Customer Price": 4.99,
+          "DIMENSION:Vendor Identifier": "0144_20121109",
+          "DIMENSION:Title": "Headh",
+          "DIMENSION:Label/Studio/Network": "Yello",
+          "DIMENSION:Product Type Identifier": "D",
+          "DIMENSION:Order Id": "5.70E+09",
+          "DIMENSION:Postal Code": "26586-2424",
+          "DIMENSION:Customer Identifier": 4967191007,
+          "DIMENSION:Sale/Return": "S",
+          "DIMENSION:Customer Currency": "USD",
+          "DIMENSION:Country Code": "CO",
+          "DIMENSION:Royalty Currency": "USD",
+          "DIMENSION:Asset/Content Flavor": "HD"
+        }, {
+          "DATETIME:date": "9/28/13",
+          "MEASURE:Units": 1,
+          "MEASURE:Royalty Price": 2.79,
+          "MEASURE:Customer Price": 3.99,
+          "DIMENSION:Vendor Identifier": "0144_20121109",
+          "DIMENSION:Title": "Headh",
+          "DIMENSION:Label/Studio/Network": "Yello",
+          "DIMENSION:Product Type Identifier": "D",
+          "DIMENSION:Order Id": "3.05E+09",
+          "DIMENSION:Postal Code": "23322-2800",
+          "DIMENSION:Customer Identifier": 3573922889,
+          "DIMENSION:Sale/Return": "S",
+          "DIMENSION:Customer Currency": "USD",
+          "DIMENSION:Country Code": "CL",
+          "DIMENSION:Royalty Currency": "USD",
+          "DIMENSION:Asset/Content Flavor": "SD"
+        }, {
+          "DATETIME:date": "9/23/13",
+          "MEASURE:Units": 1,
+          "MEASURE:Royalty Price": 2.09,
+          "MEASURE:Customer Price": 2.99,
+          "DIMENSION:Vendor Identifier": "0211_20132108",
+          "DIMENSION:Title": "AlÃŒÂ©m",
+          "DIMENSION:Label/Studio/Network": "Wakin",
+          "DIMENSION:Product Type Identifier": "D",
+          "DIMENSION:Order Id": "4.34E+09",
+          "DIMENSION:Postal Code": "18509-2108",
+          "DIMENSION:Customer Identifier": 4368359068,
+          "DIMENSION:Sale/Return": "S",
+          "DIMENSION:Customer Currency": "USD",
+          "DIMENSION:Country Code": "BR",
+          "DIMENSION:Royalty Currency": "USD",
+          "DIMENSION:Asset/Content Flavor": "HD"
+        }, {
+          "DATETIME:date": "9/28/13",
+          "MEASURE:Units": 1,
+          "MEASURE:Royalty Price": 1.39,
+          "MEASURE:Customer Price": 1.99,
+          "DIMENSION:Vendor Identifier": "0145_20121109",
+          "DIMENSION:Title": "Habem",
+          "DIMENSION:Label/Studio/Network": "Sache",
+          "DIMENSION:Product Type Identifier": "D",
+          "DIMENSION:Order Id": "3.77E+09",
+          "DIMENSION:Postal Code": "16346-1910",
+          "DIMENSION:Customer Identifier": 4481458708,
+          "DIMENSION:Sale/Return": "S",
+          "DIMENSION:Customer Currency": "USD",
+          "DIMENSION:Country Code": "BR",
+          "DIMENSION:Royalty Currency": "USD",
+          "DIMENSION:Asset/Content Flavor": "SD"
+        }
+      ];
+      scope.create = function() {};
     }));
     it("should start directive", inject(function($compile) {
       element = angular.element('<div id="#dcLine" dc-line data="rows"></div>');
@@ -25,7 +131,6 @@
       return expect(scope.data).toBeNull;
     });
     it("should change scope data and get an array", function() {
-      scope.data = [["DATETIME:date", "MEASURE: Units", "MEASURE: Royalty Price", "MEASURE: Customer Price", "DIMENSION:Vendor Identifier", "DIMENSION:Title", "DIMENSION:Label/Studio/Network", "DIMENSION:Product Type Identifier", "DIMENSION: Order Id", "DIMENSION:Postal Code", "DIMENSION: Customer Identifier", "DIMENSION:Sale/Return", "DIMENSION:Customer Currency", "DIMENSION:Country Code", "DIMENSION:Royalty Currency", "DIMENSION:Asset/Content Flavor"], ["9/27/13", 1, 3.49, 4.99, "0144_20121109", "Headh", "Yello", "D", "5.02E+09", "49915-2504", 2240000173, "S", "USD", "CL", "USD", "HD"], ["9/24/13", 1, 1.39, 1.99, "0099_20120827", "A Ond", "Const", "D", "2.03E+09", "29284-3466", 1642627348, "S", "USD", "BR", "USD", "SD"], ["9/24/13", 1, 1.39, 1.99, "0099_20120827", "A Ond", "Const", "D", "2.03E+09", "29284-3466", 1642627348, "S", "USD", "BR", "USD", "SD"], ["9/29/13", 1, 3.49, 4.99, "0144_20121109", "Headh", "Yello", "D", "5.70E+09", "26586-2424", 4967191007, "S", "USD", "CO", "USD", "HD"], ["9/28/13", 1, 2.79, 3.99, "0144_20121109", "Headh", "Yello", "D", "3.05E+09", "23322-2800", 3573922889, "S", "USD", "CL", "USD", "SD"], ["9/23/13", 1, 2.09, 2.99, "0211_20132108", "AlÌ©m", "Wakin", "D", "4.34E+09", "18509-2108", 4368359068, "S", "USD", "BR", "USD", "HD"], ["9/28/13", 1, 1.39, 1.99, "0145_20121109", "Habem", "Sache", "D", "3.77E+09", "16346-1910", 4481458708, "S", "USD", "BR", "USD", "SD"], ["9/26/13", 1, 2.99, 4.99, "0183_20130110", "O Ama", "2012 ", "D", "4.48E+09", "20425-2908", 1380109825, "S", "USD", "BR", "USD", "HD"], ["9/28/13", 1, 3.49, 4.99, "0212_20132108", "Foxfi", "Canal", "D", "1.08E+09", "41459-2577", 2801029109, "S", "USD", "BR", "USD", "HD"], ["9/27/13", 1, 1.4, 1.99, "0131_20121024", "Galin", "Brome", "M", "3.44E+09", "21878-4828", 3172794428, "S", "USD", "BR", "USD", "SD"], ["9/26/13", 1, 7, 9.99, "0043_20120702", "Pina", "Neue ", "M", "5.30E+09", "47489-2273", 2807609767, "S", "USD", "BR", "USD", "HD"], ["9/24/13", 1, 35, 50, "0144_20121109", "Headh", "Yello", "D", "4.94E+09", "37945-1054", 5076310037, "S", "MXN", "MX", "MXN", "HD"]];
       expect(scope.data).toEqual(jasmine.any(Array));
       return expect(scope.data.length).toBe > 0;
     });
@@ -40,11 +145,33 @@
     it("should have Underscore library", function() {
       return expect(_).not.toBeNull;
     });
-    return it("should input lineChart into the element", function() {
-      var dcLine;
-      dcLine = dc.lineChart('#dcLine');
-      expect(dcLine).not.toBeNull;
-      return dcLine.renderArea();
+    it("should input lineChart into the element", function() {
+      scope.dcLineChart = dc.lineChart('#dcLine');
+      return expect(scope.dcLineChart).not.toBeNull;
+    });
+    it("should call create method", function() {
+      spyOn(scope, 'create').andCallThrough();
+      scope.create();
+      return expect(scope.create).toHaveBeenCalled();
+    });
+    return it("should populate groups with crossfilter, should populate dateDimensions with groups agrupment of date and render", function() {
+      var dateDimensions, groups, maxDate, minDate, totalSum;
+      scope.dcLineChart = dc.lineChart('#dcLine');
+      groups = crossfilter(scope.data);
+      expect(groups).not.toBeNull;
+      dateDimensions = groups.dimension(function(d) {
+        return d['DATETIME:date'];
+      });
+      expect(dateDimensions).not.toBeNull;
+      totalSum = dateDimensions.group().reduceSum(function(d) {
+        return d['MEASURE:Customer Price'];
+      });
+      expect(totalSum).not.toBeNull;
+      minDate = dateDimensions.bottom(1)[0].date;
+      maxDate = dateDimensions.top(1)[0].date;
+      expect(minDate).not.toBeNull;
+      expect(maxDate).not.toBeNull;
+      return scope.dcLineChart.width(750).height(200).dimension(dateDimensions).group(totalSum).x(d3.time.scale().domain([new Date(minDate), new Date(maxDate)])).yAxisLabel("Total").xAxisLabel("Data");
     });
   });
 
