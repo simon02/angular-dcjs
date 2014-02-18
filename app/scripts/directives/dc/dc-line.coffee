@@ -23,7 +23,6 @@ directive "dcLine", ()->
     )
 
     $scope.create = ()=>
-
       dateDimensions = $scope.chartData.dimension((d)->
         return d['DATETIME:date']
       )

@@ -22,7 +22,111 @@
         $scope = $rootScope.$new();
         $controller = $injector.get('$controller');
         $httpBackend = $injector.get('$httpBackend');
-        dataResponse = [["DATETIME:date", "MEASURE: Units", "MEASURE: Royalty Price", "MEASURE: Customer Price", "DIMENSION:Vendor Identifier", "DIMENSION:Title", "DIMENSION:Label/Studio/Network", "DIMENSION:Product Type Identifier", "DIMENSION: Order Id", "DIMENSION:Postal Code", "DIMENSION: Customer Identifier", "DIMENSION:Sale/Return", "DIMENSION:Customer Currency", "DIMENSION:Country Code", "DIMENSION:Royalty Currency", "DIMENSION:Asset/Content Flavor"], ["9/27/13", 1, 3.49, 4.99, "0144_20121109", "Headh", "Yello", "D", "5.02E+09", "49915-2504", 2240000173, "S", "USD", "CL", "USD", "HD"], ["9/24/13", 1, 1.39, 1.99, "0099_20120827", "A Ond", "Const", "D", "2.03E+09", "29284-3466", 1642627348, "S", "USD", "BR", "USD", "SD"]];
+        dataResponse = [
+          {
+            "DATETIME:date": "9/27/13",
+            "MEASURE:Units": 1,
+            "MEASURE:Royalty Price": 3.49,
+            "MEASURE:Customer Price": 4.99,
+            "DIMENSION:Vendor Identifier": "0144_20121109",
+            "DIMENSION:Title": "Headh",
+            "DIMENSION:Label/Studio/Network": "Yello",
+            "DIMENSION:Product Type Identifier": "D",
+            "DIMENSION:Order Id": "5.02E+09",
+            "DIMENSION:Postal Code": "49915-2504",
+            "DIMENSION:Customer Identifier": 2240000173,
+            "DIMENSION:Sale/Return": "S",
+            "DIMENSION:Customer Currency": "USD",
+            "DIMENSION:Country Code": "CL",
+            "DIMENSION:Royalty Currency": "USD",
+            "DIMENSION:Asset/Content Flavor": "HD"
+          }, {
+            "DATETIME:date": "9/24/13",
+            "MEASURE:Units": 1,
+            "MEASURE:Royalty Price": 1.39,
+            "MEASURE:Customer Price": 1.99,
+            "DIMENSION:Vendor Identifier": "0099_20120827",
+            "DIMENSION:Title": "A Ond",
+            "DIMENSION:Label/Studio/Network": "Const",
+            "DIMENSION:Product Type Identifier": "D",
+            "DIMENSION:Order Id": "2.03E+09",
+            "DIMENSION:Postal Code": "29284-3466",
+            "DIMENSION:Customer Identifier": 1642627348,
+            "DIMENSION:Sale/Return": "S",
+            "DIMENSION:Customer Currency": "USD",
+            "DIMENSION:Country Code": "BR",
+            "DIMENSION:Royalty Currency": "USD",
+            "DIMENSION:Asset/Content Flavor": "SD"
+          }, {
+            "DATETIME:date": "9/29/13",
+            "MEASURE:Units": 1,
+            "MEASURE:Royalty Price": 3.49,
+            "MEASURE:Customer Price": 4.99,
+            "DIMENSION:Vendor Identifier": "0144_20121109",
+            "DIMENSION:Title": "Headh",
+            "DIMENSION:Label/Studio/Network": "Yello",
+            "DIMENSION:Product Type Identifier": "D",
+            "DIMENSION:Order Id": "5.70E+09",
+            "DIMENSION:Postal Code": "26586-2424",
+            "DIMENSION:Customer Identifier": 4967191007,
+            "DIMENSION:Sale/Return": "S",
+            "DIMENSION:Customer Currency": "USD",
+            "DIMENSION:Country Code": "CO",
+            "DIMENSION:Royalty Currency": "USD",
+            "DIMENSION:Asset/Content Flavor": "HD"
+          }, {
+            "DATETIME:date": "9/28/13",
+            "MEASURE:Units": 1,
+            "MEASURE:Royalty Price": 2.79,
+            "MEASURE:Customer Price": 3.99,
+            "DIMENSION:Vendor Identifier": "0144_20121109",
+            "DIMENSION:Title": "Headh",
+            "DIMENSION:Label/Studio/Network": "Yello",
+            "DIMENSION:Product Type Identifier": "D",
+            "DIMENSION:Order Id": "3.05E+09",
+            "DIMENSION:Postal Code": "23322-2800",
+            "DIMENSION:Customer Identifier": 3573922889,
+            "DIMENSION:Sale/Return": "S",
+            "DIMENSION:Customer Currency": "USD",
+            "DIMENSION:Country Code": "CL",
+            "DIMENSION:Royalty Currency": "USD",
+            "DIMENSION:Asset/Content Flavor": "SD"
+          }, {
+            "DATETIME:date": "9/23/13",
+            "MEASURE:Units": 1,
+            "MEASURE:Royalty Price": 2.09,
+            "MEASURE:Customer Price": 2.99,
+            "DIMENSION:Vendor Identifier": "0211_20132108",
+            "DIMENSION:Title": "AlÃŒÂ©m",
+            "DIMENSION:Label/Studio/Network": "Wakin",
+            "DIMENSION:Product Type Identifier": "D",
+            "DIMENSION:Order Id": "4.34E+09",
+            "DIMENSION:Postal Code": "18509-2108",
+            "DIMENSION:Customer Identifier": 4368359068,
+            "DIMENSION:Sale/Return": "S",
+            "DIMENSION:Customer Currency": "USD",
+            "DIMENSION:Country Code": "BR",
+            "DIMENSION:Royalty Currency": "USD",
+            "DIMENSION:Asset/Content Flavor": "HD"
+          }, {
+            "DATETIME:date": "9/28/13",
+            "MEASURE:Units": 1,
+            "MEASURE:Royalty Price": 1.39,
+            "MEASURE:Customer Price": 1.99,
+            "DIMENSION:Vendor Identifier": "0145_20121109",
+            "DIMENSION:Title": "Habem",
+            "DIMENSION:Label/Studio/Network": "Sache",
+            "DIMENSION:Product Type Identifier": "D",
+            "DIMENSION:Order Id": "3.77E+09",
+            "DIMENSION:Postal Code": "16346-1910",
+            "DIMENSION:Customer Identifier": 4481458708,
+            "DIMENSION:Sale/Return": "S",
+            "DIMENSION:Customer Currency": "USD",
+            "DIMENSION:Country Code": "BR",
+            "DIMENSION:Royalty Currency": "USD",
+            "DIMENSION:Asset/Content Flavor": "SD"
+          }
+        ];
         MainController = $controller('MainController', {
           '$scope': $scope,
           'Debug': Debug
@@ -43,6 +147,12 @@
       spyOn($scope, 'retrieveData').andCallThrough();
       $scope.retrieveData();
       return expect($scope.retrieveData).toHaveBeenCalled();
+    });
+    it("should format dates", function() {
+      return dataResponse.forEach(function(d) {
+        d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
+        return expect(d['DATETIME:date']).not.ToBeNull;
+      });
     });
     it("should populate rows", function() {
       $scope.rows = dataResponse;

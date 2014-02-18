@@ -16,6 +16,7 @@ controller('MainController', ['$scope','Debug','dataAPI',
             d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
             return
           )
+          
           $scope.rows = crossfilter(response.data)
           $scope.identifyHeaders(response.data)
         return
