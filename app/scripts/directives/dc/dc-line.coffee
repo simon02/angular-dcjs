@@ -1,14 +1,13 @@
 "use strict"
+if not dc or not d3 or not crossfilter or not _
+  throw 'You need to load DC, D3, Crossfilter and Underscore library'
 
 angular.module('dcLine',[]).
 
 directive "dcLine", ()->
-  if not dc or not d3 or not crossfilter or not _
-    throw 'You need to load DC, D3, Crossfilter and Underscore library'
   scope:
     data: '='
     dimensions: '='
-  transclude: true
   templateUrl: 'dc/line/template.html'
   link: ($scope, element, attrs)->
 
@@ -17,37 +16,34 @@ directive "dcLine", ()->
 
     $scope.$watch('data', (data)->
       if data
-        $scope.chartData = angular.copy(data)
+        $scope.chartData = data
         $scope.dcLineChart = dc.lineChart('#' + $scope.chartId)
         $scope.create()
         return
     )
 
     $scope.create = ()=>
-      $scope.chartData.forEach((d)->
-        d['dateLineParam'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
-        return
-      )
 
-      groups = crossfilter($scope.chartData)
-      dateDimensions = groups.dimension((d)->
-        return d['dateLineParam']
+      dateDimensions = $scope.chartData.dimension((d)->
+        return d['DATETIME:date']
       )
       totalSum = dateDimensions.group().reduceSum((d)->
         return d['MEASURE:Customer Price']
       )
 
-      minDate = dateDimensions.bottom(1)[0]['dateLineParam']
-      maxDate = dateDimensions.top(1)[0]['dateLineParam']
+      minDate = dateDimensions.bottom(1)[0]['DATETIME:date']
+      maxDate = dateDimensions.top(1)[0]['DATETIME:date']
 
       $scope.dcLineChart.
         width(element.width()).
         height($scope.height).
+        margins({ top: 10, left: 50, right: 10, bottom: 50 }).
         dimension(dateDimensions).
         group(totalSum, "Price").
         x(d3.time.scale().domain([minDate,maxDate])).
         yAxisLabel("Total").
-        xAxisLabel("Data")
+        xAxisLabel("Data").
+        elasticY(true);
 
       $scope.dcLineChart.render()
       return

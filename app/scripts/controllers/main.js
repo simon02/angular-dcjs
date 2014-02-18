@@ -11,8 +11,13 @@
       };
       $scope.retrieveData = function() {
         dataAPI.getData().then(function(response) {
-          $scope.rows = response.data;
-          $scope.identifyHeaders(response.data);
+          if (response.data) {
+            response.data.forEach(function(d) {
+              d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
+            });
+            $scope.rows = crossfilter(response.data);
+            $scope.identifyHeaders(response.data);
+          }
         });
       };
       $scope.identifyHeaders = function(data) {
