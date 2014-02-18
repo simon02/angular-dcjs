@@ -32,8 +32,13 @@ directive "dcPie", ()->
       )
 
       $scope.dcPieChart.
-        dimension(newDim).
-        filter(value)
+        dimension(newDim)
+
+      if(value)
+        $scope.dcPieChart.filter(value)
+      else
+        $scope.dcPieChart.filter()
+
 
       $scope.dcPieChart.render()
 

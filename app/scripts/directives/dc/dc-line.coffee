@@ -33,17 +33,20 @@ directive "dcLine", ()->
         return d['DATETIME:date']
       )
 
-      totalSum = newDim.group().reduceSum((d)->
-        console.log(dimension)
+      sum = newDim.group().reduceSum((d)->
         return d[dimension]
       )
 
       $scope.dcLineChart.
-      group(totalSum).
-      yAxisLabel(dimension).
-      filter(value)
+      group(sum).
+      yAxisLabel(dimension)
 
-      $scope.dcLineChart.redraw()
+      if(value)
+        $scope.dcLineChart.filter(value)
+      else
+        $scope.dcLineChart.filter()
+
+      $scope.dcLineChart.render()
 
     $scope.create = ()=>
       dimensions = $scope.chartData.dimension((d)->

@@ -33,7 +33,12 @@
           newDim = $scope.chartData.dimension(function(d) {
             return d[dimension];
           });
-          $scope.dcPieChart.dimension(newDim).filter(value);
+          $scope.dcPieChart.dimension(newDim);
+          if (value) {
+            $scope.dcPieChart.filter(value);
+          } else {
+            $scope.dcPieChart.filter();
+          }
           return $scope.dcPieChart.render();
         };
         $scope.create = function() {

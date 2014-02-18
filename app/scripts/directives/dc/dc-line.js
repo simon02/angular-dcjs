@@ -30,16 +30,20 @@
           }
         }, true);
         $scope.setFilter = function(dimension, value) {
-          var newDim, totalSum;
+          var newDim, sum;
           newDim = $scope.chartData.dimension(function(d) {
             return d['DATETIME:date'];
           });
-          totalSum = newDim.group().reduceSum(function(d) {
-            console.log(dimension);
+          sum = newDim.group().reduceSum(function(d) {
             return d[dimension];
           });
-          $scope.dcLineChart.group(totalSum).yAxisLabel(dimension).filter(value);
-          return $scope.dcLineChart.redraw();
+          $scope.dcLineChart.group(sum).yAxisLabel(dimension);
+          if (value) {
+            $scope.dcLineChart.filter(value);
+          } else {
+            $scope.dcLineChart.filter();
+          }
+          return $scope.dcLineChart.render();
         };
         $scope.create = function() {
           var dimensions, maxDate, minDate, totalSum;
