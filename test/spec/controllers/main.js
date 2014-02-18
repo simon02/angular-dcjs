@@ -194,10 +194,17 @@
       Debug.input('Test');
       return expect(Debug.input).toHaveBeenCalled();
     });
-    return it("should call output and get more than one item in array", function() {
+    it("should call output and get more than one item in array", function() {
       spyOn(Debug, 'output').andCallThrough();
       expect(Debug.output().length).toBe > 0;
       return expect(Debug.output).toHaveBeenCalled();
+    });
+    return it("should populate fields for filters", function() {
+      $scope.rows = crossfilter(dataResponse);
+      expect($scope.rows).not.ToBeNull;
+      spyOn($scope, 'createFilters').andCallThrough();
+      $scope.createFilters();
+      return expect($scope.createFilters).toHaveBeenCalled;
     });
   });
 

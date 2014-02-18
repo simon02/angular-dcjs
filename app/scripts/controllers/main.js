@@ -6,6 +6,13 @@
     '$scope', 'Debug', 'dataAPI', function($scope, Debug, dataAPI) {
       $scope.measures = [];
       $scope.dimensions = [];
+      $scope.datetime = [];
+      $scope.searchData = [];
+      $scope.select2Opt = {
+        'multiple': true,
+        'simples_tags': true,
+        'tags': [$scope.measures, $scope.dimensions, $scope.datetime]
+      };
       $scope.getLog = function() {
         return Debug.output();
       };
@@ -46,7 +53,57 @@
           }
         }
       };
-      return $scope.retrieveData();
+      $scope.retrieveData();
+      $scope.generateDimensions = function() {
+        return angular.forEach($scope.Dimension, function(value, key) {
+          var dimensions;
+          dimensions = $scope.rows.dimension(function(d) {
+            return d['DIMENSION:' + value];
+          });
+          return angular.forEach(dimensions.group().all(), function(value2, key2) {
+            return $scope.filterSource.push('DIMENSION:' + value + ':' + value2.key);
+          });
+        });
+      };
+      $scope.generateMeasures = function() {
+        return angular.forEach($scope.Measure, function(value, key) {
+          var dimensions;
+          dimensions = $scope.rows.dimension(function(d) {
+            return d['MEASURE:' + value];
+          });
+          return angular.forEach(dimensions.group().all(), function(value2, key2) {
+            return $scope.filterSource.push('MEASURE:' + value + ':' + value2.key);
+          });
+        });
+      };
+      $scope.generateDatetime = function() {
+        return angular.forEach($scope.Datetime, function(value, key) {
+          var dimensions;
+          dimensions = $scope.rows.dimension(function(d) {
+            return d['DATETIME:' + value];
+          });
+          return angular.forEach(dimensions.group().all(), function(value2, key2) {
+            return $scope.filterSource.push('DATETIME:' + value + ':' + value2.key.toUTCString());
+          });
+        });
+      };
+      $scope.useFilter = function() {
+        var input, pattern;
+        if ($scope.include) {
+          $scope.exclude = null;
+          pattern = new RegExp('(.*):(.*):(.*)');
+          input = $scope.include.match(pattern);
+          if (input) {
+            if (input.length >= 4) {
+              $scope.filter = {
+                dimension: input[1] + ':' + input[2],
+                value: input[3]
+              };
+            }
+          }
+        }
+      };
+      return $scope.removeFilter = function() {};
     }
   ]);
 

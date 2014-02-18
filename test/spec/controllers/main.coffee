@@ -103,3 +103,10 @@ describe "Controller:MainController", ()->
     spyOn(Debug, 'output').andCallThrough()
     expect(Debug.output().length).toBe > 0
     expect(Debug.output).toHaveBeenCalled()
+
+  it "should populate fields for filters", ()->
+    $scope.rows  = crossfilter(dataResponse)
+    expect($scope.rows).not.ToBeNull
+    spyOn($scope,'createFilters').andCallThrough()
+    $scope.createFilters()
+    expect($scope.createFilters).toHaveBeenCalled

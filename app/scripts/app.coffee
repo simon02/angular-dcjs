@@ -1,6 +1,6 @@
 "use strict"
 
-angular.module('angularDcjsApp', ['ngRoute', 'gridster', 'dcModule'])
+angular.module('angularDcjsApp', ['ngRoute', 'gridster', 'dcModule','ui.select2'])
 
 .config ($routeProvider)->
   $routeProvider

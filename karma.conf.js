@@ -19,6 +19,8 @@ module.exports = function(config) {
       'app/bower_components/d3/d3.js',
       'app/bower_components/crossfilter/crossfilter.js',
       'app/bower_components/dc.js/dc.js',
+	    'app/bower_components/select2/select2.js',
+	    'app/bower_components/angular-ui-select2/src/select2.js',
       'node_modules/requirejs/require.js',
       'app/sampledata.json',
       'app/sampledata.js',

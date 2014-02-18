@@ -7,31 +7,48 @@ angular.module('dcPie',[]).
 directive "dcPie", ()->
   scope:
     data: '='
+    filter: '='
   templateUrl: 'dc/pie/template.html'
   link: ($scope, element, attrs)->
     $scope.chartId = if attrs.id then attrs.id else 'dcPieDefault'
     $scope.height = if attrs.height then attrs.height else 150
+    $scope.dcPieChart = dc.pieChart('#' + $scope.chartId)
 
     $scope.$watch('data', (data)->
       if data
         $scope.chartData = data
-        $scope.dcPieChart = dc.pieChart('#' + $scope.chartId)
         $scope.create()
         return
     )
 
+    $scope.$watch('filter', (filter)->
+      if filter
+        $scope.setFilter(filter.dimension, filter.value)
+    , true)
+
+    $scope.setFilter = (dimension, value)->
+      newDim = $scope.chartData.dimension((d)->
+        return d[dimension]
+      )
+
+      $scope.dcPieChart.
+        dimension(newDim).
+        filter(value)
+
+      $scope.dcPieChart.render()
+
     $scope.create = ()=>
-      dateDimensions = $scope.chartData.dimension((d)->
+      dimensions = $scope.chartData.dimension((d)->
         return d['DIMENSION:Asset/Content Flavor']
       )
-      totalSum = dateDimensions.group().reduceSum((d)->
+      totalSum = dimensions.group().reduceSum((d)->
         return d['MEASURE:Customer Price']
       )
 
       $scope.dcPieChart.
         width(element.width()).
         height($scope.height).
-        dimension(dateDimensions).
+        dimension(dimensions).
         group(totalSum)
 
       $scope.dcPieChart.render()

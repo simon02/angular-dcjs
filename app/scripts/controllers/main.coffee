@@ -5,6 +5,15 @@ controller('MainController', ['$scope','Debug','dataAPI',
 
     $scope.measures = []
     $scope.dimensions = []
+    $scope.datetime= []
+
+    $scope.searchData = []
+
+    $scope.select2Opt = {
+      'multiple':true,
+      'simples_tags': true,
+      'tags': [$scope.measures, $scope.dimensions, $scope.datetime]
+    }
 
     $scope.getLog = ()->
       return Debug.output()
@@ -16,7 +25,7 @@ controller('MainController', ['$scope','Debug','dataAPI',
             d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
             return
           )
-          
+
           $scope.rows = crossfilter(response.data)
           $scope.identifyHeaders(response.data)
         return
@@ -46,5 +55,59 @@ controller('MainController', ['$scope','Debug','dataAPI',
           })
 
     $scope.retrieveData()
+
+
+    $scope.generateDimensions = ()->
+      angular.forEach($scope.Dimension,(value, key)->
+        dimensions = $scope.rows.dimension((d)->
+          return d['DIMENSION:' + value]
+        )
+        angular.forEach(dimensions.group().all(),(value2,key2)->
+          $scope.filterSource.push(
+            'DIMENSION:' + value + ':' + value2.key
+            )
+        )
+      )
+
+    $scope.generateMeasures = ()->
+      angular.forEach($scope.Measure,(value, key)->
+        dimensions = $scope.rows.dimension((d)->
+          return d['MEASURE:' + value]
+        )
+        angular.forEach(dimensions.group().all(),(value2,key2)->
+          $scope.filterSource.push(
+            'MEASURE:' + value + ':' + value2.key
+            )
+        )
+      )
+
+    $scope.generateDatetime= ()->
+      angular.forEach($scope.Datetime,(value, key)->
+        dimensions = $scope.rows.dimension((d)->
+          return d['DATETIME:' + value]
+        )
+        angular.forEach(dimensions.group().all(),(value2,key2)->
+          $scope.filterSource.push(
+            'DATETIME:' + value + ':' + value2.key.toUTCString()
+          )
+        )
+      )
+
+    $scope.useFilter = ()->
+      if($scope.include)
+        $scope.exclude = null
+        pattern = new RegExp('(.*):(.*):(.*)')
+        input = $scope.include.match(pattern)
+        if(input)
+          if(input.length >= 4)
+            $scope.filter = {
+              dimension: input[1] + ':' + input[2],
+              value: input[3]
+            }
+            return
+#      console.log $scope.rows
+
+
+    $scope.removeFilter = ()->
 
 ])
