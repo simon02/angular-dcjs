@@ -41,8 +41,8 @@ directive "dcLine", ()->
         dimension(dateDimensions).
         group(totalSum, "Price").
         x(d3.time.scale().domain([minDate,maxDate])).
-        yAxisLabel("Total").
-        xAxisLabel("Data").
+        yAxisLabel("Customer Price").
+        xAxisLabel("Date").
         elasticY(true);
 
       $scope.dcLineChart.render()

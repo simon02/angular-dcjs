@@ -38,7 +38,7 @@
             left: 50,
             right: 10,
             bottom: 50
-          }).dimension(dateDimensions).group(totalSum, "Price").x(d3.time.scale().domain([minDate, maxDate])).yAxisLabel("Total").xAxisLabel("Data").elasticY(true);
+          }).dimension(dateDimensions).group(totalSum, "Price").x(d3.time.scale().domain([minDate, maxDate])).yAxisLabel("Customer Price").xAxisLabel("Date").elasticY(true);
           $scope.dcLineChart.render();
         };
       }
