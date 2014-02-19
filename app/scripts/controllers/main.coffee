@@ -7,14 +7,6 @@ controller('MainController', ['$scope','Debug','dataAPI',
     $scope.dimensions = []
     $scope.datetime= []
 
-    $scope.searchData = []
-
-    $scope.select2Opt = {
-      'multiple':true,
-      'simples_tags': true,
-      'tags': [$scope.measures, $scope.dimensions, $scope.datetime]
-    }
-
     $scope.getLog = ()->
       return Debug.output()
 
@@ -27,15 +19,13 @@ controller('MainController', ['$scope','Debug','dataAPI',
           )
 
           $scope.rows = crossfilter(response.data)
-          $scope.lineChart = $scope.rows.dimension((d)->
+          $scope.lineChartDim = $scope.rows.dimension((d)->
             return d['DATETIME:date']
           )
-          $scope.pieChart = $scope.rows.dimension((d)->
+          $scope.pieChartDim = $scope.rows.dimension((d)->
             return d['DIMENSION:Asset/Content Flavor']
           )
-          $scope.pieChart2 = $scope.rows.dimension((d)->
-            return d['DIMENSION:Title']
-          )
+
           $scope.setChartDim()
           $scope.identifyHeaders(response.data)
         return
@@ -49,28 +39,22 @@ controller('MainController', ['$scope','Debug','dataAPI',
 
     $scope.setChartDim = ()->
       $scope.lineChartOpts = {
-        dimension: $scope.lineChart
-        sum: $scope.lineChart.group().reduceSum((d)->
+        data: $scope.rows
+        dimension: $scope.lineChartDim
+        sum: $scope.lineChartDim.group().reduceSum((d)->
             return d['MEASURE:Customer Price']
           )
-        minDate: $scope.lineChart.bottom(1)[0]['DATETIME:date']
-        maxDate: $scope.lineChart.top(1)[0]['DATETIME:date']
+        minDate: $scope.lineChartDim.bottom(1)[0]['DATETIME:date']
+        maxDate: $scope.lineChartDim.top(1)[0]['DATETIME:date']
       }
 
       $scope.pieChartOpts = {
-        dimension: $scope.pieChart
-        sum: $scope.pieChart.group().reduceSum((d)->
+        data: $scope.rows
+        dimension: $scope.pieChartDim
+        sum: $scope.pieChartDim.group().reduceSum((d)->
           return d['MEASURE:Customer Price']
         )
       }
-
-      $scope.pieChartOpts2 = {
-        dimension: $scope.pieChart2
-        sum: $scope.pieChart2.group().reduceSum((d)->
-            return d['MEASURE:Customer Price']
-          )
-      }
-      return
 
     $scope.getParams = (data, index)=>
       if data and index
@@ -128,7 +112,7 @@ controller('MainController', ['$scope','Debug','dataAPI',
         )
       )
 
-#    $scope.useFilter = ()->
+    $scope.useFilter = ()->
 #      if($scope.include)
 #        $scope.exclude = null
 #        pattern = new RegExp('(.*):(.*):(.*)')

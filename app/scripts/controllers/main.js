@@ -7,12 +7,6 @@
       $scope.measures = [];
       $scope.dimensions = [];
       $scope.datetime = [];
-      $scope.searchData = [];
-      $scope.select2Opt = {
-        'multiple': true,
-        'simples_tags': true,
-        'tags': [$scope.measures, $scope.dimensions, $scope.datetime]
-      };
       $scope.getLog = function() {
         return Debug.output();
       };
@@ -23,14 +17,11 @@
               d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
             });
             $scope.rows = crossfilter(response.data);
-            $scope.lineChart = $scope.rows.dimension(function(d) {
+            $scope.lineChartDim = $scope.rows.dimension(function(d) {
               return d['DATETIME:date'];
             });
-            $scope.pieChart = $scope.rows.dimension(function(d) {
+            $scope.pieChartDim = $scope.rows.dimension(function(d) {
               return d['DIMENSION:Asset/Content Flavor'];
-            });
-            $scope.pieChart2 = $scope.rows.dimension(function(d) {
-              return d['DIMENSION:Title'];
             });
             $scope.setChartDim();
             $scope.identifyHeaders(response.data);
@@ -44,22 +35,18 @@
       };
       $scope.setChartDim = function() {
         $scope.lineChartOpts = {
-          dimension: $scope.lineChart,
-          sum: $scope.lineChart.group().reduceSum(function(d) {
+          data: $scope.rows,
+          dimension: $scope.lineChartDim,
+          sum: $scope.lineChartDim.group().reduceSum(function(d) {
             return d['MEASURE:Customer Price'];
           }),
-          minDate: $scope.lineChart.bottom(1)[0]['DATETIME:date'],
-          maxDate: $scope.lineChart.top(1)[0]['DATETIME:date']
+          minDate: $scope.lineChartDim.bottom(1)[0]['DATETIME:date'],
+          maxDate: $scope.lineChartDim.top(1)[0]['DATETIME:date']
         };
-        $scope.pieChartOpts = {
-          dimension: $scope.pieChart,
-          sum: $scope.pieChart.group().reduceSum(function(d) {
-            return d['MEASURE:Customer Price'];
-          })
-        };
-        $scope.pieChartOpts2 = {
-          dimension: $scope.pieChart2,
-          sum: $scope.pieChart2.group().reduceSum(function(d) {
+        return $scope.pieChartOpts = {
+          data: $scope.rows,
+          dimension: $scope.pieChartDim,
+          sum: $scope.pieChartDim.group().reduceSum(function(d) {
             return d['MEASURE:Customer Price'];
           })
         };
@@ -119,6 +106,7 @@
           });
         });
       };
+      $scope.useFilter = function() {};
       return $scope.removeFilter = function() {};
     }
   ]);

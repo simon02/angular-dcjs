@@ -42,6 +42,9 @@ describe "Controller:MainController", ()->
     $httpBackend.verifyNoOutstandingRequest()
   )
 
+  it "should be an array in dimensions", ()->
+    expect($scope.dimensions).toEqual jasmine.any(Array)
+
   it "should be an array in measures", ()->
     expect($scope.measures).toEqual jasmine.any(Array)
 
@@ -58,10 +61,35 @@ describe "Controller:MainController", ()->
       d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
       expect(d['DATETIME:date']).not.ToBeNull
     )
-
   it "should populate rows", ()->
-    $scope.rows = dataResponse
-    expect($scope.rows).toEqual jasmine.any(Array)
+    $scope.rows = crossfilter(dataResponse)
+    expect($scope.rows).toEqual jasmine.any(Object)
+
+  it "should populate lineChartDim", ()->
+    $scope.rows = crossfilter(dataResponse)
+    $scope.lineChartDim = $scope.rows.dimension((d)->
+      return d['DATETIME:date']
+    )
+    expect($scope.lineChartDim).toEqual jasmine.any(Object)
+
+  it "should populate linePieDim", ()->
+    $scope.rows = crossfilter(dataResponse)
+    $scope.linePieDim = $scope.rows.dimension((d)->
+      return d['DIMENSION:Asset/Content Flavor']
+    )
+    expect($scope.linePieDim).toEqual jasmine.any(Object)
+
+  it "should call setChartDim", ()->
+    $scope.rows = crossfilter(dataResponse)
+    $scope.lineChartDim = $scope.rows.dimension((d)->
+      return d['DATETIME:date']
+    )
+    $scope.pieChartDim = $scope.rows.dimension((d)->
+      return d['DIMENSION:Asset/Content Flavor']
+    )
+    spyOn($scope,'setChartDim').andCallThrough()
+    $scope.setChartDim()
+    expect($scope.setChartDim).toHaveBeenCalled()
 
   it "should call identifyHeaders", ()->
     spyOn($scope,'identifyHeaders').andCallThrough()
@@ -94,6 +122,9 @@ describe "Controller:MainController", ()->
   it "should add dimensions", ()->
     expect($scope.dimensions.length).toBe > 0
 
+  it "should add datetime", ()->
+    expect($scope.datetime.length).toBe > 0
+
   it "should add an input value", ()->
     spyOn(Debug, 'input').andCallThrough()
     Debug.input('Test')
@@ -103,10 +134,3 @@ describe "Controller:MainController", ()->
     spyOn(Debug, 'output').andCallThrough()
     expect(Debug.output().length).toBe > 0
     expect(Debug.output).toHaveBeenCalled()
-
-  it "should populate fields for filters", ()->
-    $scope.rows  = crossfilter(dataResponse)
-    expect($scope.rows).not.ToBeNull
-    spyOn($scope,'createFilters').andCallThrough()
-    $scope.createFilters()
-    expect($scope.createFilters).toHaveBeenCalled

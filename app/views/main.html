@@ -9,14 +9,14 @@
 				<h2>Filters</h2>
 				<form role="form">
 					<div class="form-group">
-						<label for="include">Include</label>
+						<label for="include">Dimensions</label>
 						{{ include }}
-						<input id="include" ng-model="include" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}">
+						<input id="include" ng-model="include" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}" ng-change="useFilter()">
 					</div>
 					<div class="form-group">
 						<label for="exclude">Exclude</label>
 						{{ exclude }}
-						<input id="exclude" ng-model="exclude" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}">
+						<input id="exclude" ng-model="exclude" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}" ng-change="useFilter()">
 					</div>
 				</form>
 			</div>
@@ -25,16 +25,16 @@
 				<div class="row">
 					<div class="cols-xs-8 col-md-6">
 						<h4>LineChart</h4>
-						<div id="dcLine" dc-line="lineChartOpts" height="250" style="display:block;width: 100%;"></div>
+						<div id="dcLine" dc-line="lineChartOpts" height="250"style="display:block;width: 100%;"></div>
 					</div>
 					<div class="cols-xs-8 col-md-6">
 						<h4>PieChart Assets</h4>
-						<div id="dcPie" dc-pie="pieChartOpts" height="200" style="display:block;width: 100%;"></div>
+						<div id="dcPie" dc-pie="pieChartOpts" dimensions="Dimension" measures="Measure" height="200" style="display:block;width: 100%;"></div>
 					</div>
-					<div class="cols-xs-8 col-md-6">
+					<!--<div class="cols-xs-8 col-md-6">
 						<h4>PieChart Title</h4>
 						<div id="dcPie2" dc-pie="pieChartOpts2" height="200" style="display:block;width: 100%;"></div>
-					</div>
+					</div>-->
 				</div>
 			</div>
 			<div class="col-xs-6 col-md-4">

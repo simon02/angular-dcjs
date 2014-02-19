@@ -8,7 +8,9 @@
   angular.module('dcLine', []).directive("dcLine", function() {
     return {
       scope: {
-        dcLine: '='
+        dcLine: '=',
+        dimensions: '=',
+        measures: '='
       },
       templateUrl: 'dc/line/template.html',
       link: function($scope, element, attrs) {
@@ -16,6 +18,16 @@
         $scope.chartId = attrs.id ? attrs.id : 'dcLineDefault';
         $scope.height = attrs.height ? attrs.height : 150;
         $scope.dcLineChart = dc.lineChart('#' + $scope.chartId);
+        $scope.$watch('dimensions', function(dim) {
+          if (dim) {
+            return $scope.dimFilters = dim;
+          }
+        });
+        $scope.$watch('measures', function(measure) {
+          if (measure) {
+            return $scope.measureFilters = measure;
+          }
+        });
         $scope.$watch('dcLine', function(dcLine) {
           if (dcLine) {
             $scope.create();

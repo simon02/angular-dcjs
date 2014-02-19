@@ -8,7 +8,9 @@
   angular.module('dcPie', []).directive("dcPie", function() {
     return {
       scope: {
-        dcPie: '='
+        dcPie: '=',
+        dimensions: '=',
+        measures: '='
       },
       templateUrl: 'dc/pie/template.html',
       link: function($scope, element, attrs) {
@@ -16,11 +18,34 @@
         $scope.chartId = attrs.id ? attrs.id : 'dcPieDefault';
         $scope.height = attrs.height ? attrs.height : 150;
         $scope.dcPieChart = dc.pieChart('#' + $scope.chartId);
+        $scope.$watch('dimensions', function(dim) {
+          if (dim) {
+            return $scope.dimFilters = dim;
+          }
+        });
+        $scope.$watch('measures', function(measure) {
+          if (measure) {
+            return $scope.measureFilters = measure;
+          }
+        });
         $scope.$watch('dcPie', function(dcPie) {
           if (dcPie) {
             $scope.create();
           }
         });
+        $scope.setMetrics = function() {
+          if ($scope.dimFilter && $scope.measureFilter) {
+            $scope.dcPieChart.filterAll();
+            $scope.dcPie.dimension = $scope.dcPie.data.dimension(function(d) {
+              return d['DIMENSION:' + $scope.dimFilter];
+            });
+            $scope.dcPie.sum = $scope.dcPie.dimension.group().reduceSum(function(d) {
+              return d['MEASURE:' + $scope.measureFilter];
+            });
+            $scope.dcPieChart.dimension($scope.dcPie.dimension).group($scope.dcPie.sum);
+            return $scope.dcPieChart.render();
+          }
+        };
         $scope.create = function() {
           $scope.dcPieChart.width(element.width()).height($scope.height).dimension($scope.dcPie.dimension).group($scope.dcPie.sum);
           $scope.dcPieChart.render();

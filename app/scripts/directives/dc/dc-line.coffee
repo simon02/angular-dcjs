@@ -7,12 +7,25 @@ angular.module('dcLine',[]).
 directive "dcLine", ()->
   scope:
     dcLine: '='
+    dimensions: '='
+    measures: '='
   templateUrl: 'dc/line/template.html'
   link: ($scope, element, attrs)->
 
     $scope.chartId = if attrs.id then attrs.id else 'dcLineDefault'
     $scope.height = if attrs.height then attrs.height else 150
     $scope.dcLineChart = dc.lineChart('#' + $scope.chartId)
+
+
+    $scope.$watch('dimensions',(dim)->
+      if dim
+        $scope.dimFilters = dim
+    )
+
+    $scope.$watch('measures',(measure)->
+      if measure
+        $scope.measureFilters = measure
+    )
 
     $scope.$watch('dcLine', (dcLine)->
       if dcLine

@@ -2,11 +2,13 @@
 (function() {
   "use strict";
   describe("Directive: Dc-Pie", function() {
-    var attrs, controller, element, scope;
+    var data, dataResponse, dimension, element, measure, scope;
     scope = void 0;
     element = void 0;
-    attrs = void 0;
-    controller = void 0;
+    data = void 0;
+    dataResponse = void 0;
+    dimension = void 0;
+    measure = void 0;
     beforeEach(function() {
       module('dcModule.templates');
     });
@@ -15,7 +17,7 @@
     });
     beforeEach(inject(function($rootScope) {
       scope = $rootScope.$new();
-      scope.data = [
+      dataResponse = [
         {
           "DATETIME:date": "9/27/13",
           "MEASURE:Units": 1,
@@ -120,20 +122,25 @@
           "DIMENSION:Asset/Content Flavor": "SD"
         }
       ];
+      data = crossfilter(dataResponse);
+      dimension = data.dimension(function(d) {
+        return d['DIMENSION:Title'];
+      });
+      measure = dimension.group().reduceSum(function(d) {
+        return d['MEASURE:Customer Price'];
+      });
+      scope.dcPie = {
+        dimensions: dimension,
+        sum: measure
+      };
+      scope.setMetrics = function() {};
       scope.create = function() {};
     }));
     it("should start directive", inject(function($compile) {
-      element = angular.element('<div id="#dcPie" dc-pie data="rows"></div>');
+      element = angular.element('<div id="#dcPie" dc-pie="dcPie"></div>');
       element = $compile(element)(scope);
       return expect(element.html()).not.toBeNull;
     }));
-    it("should load data from scope", function() {
-      return expect(scope.data).toBeNull;
-    });
-    it("should change scope data and get an array", function() {
-      expect(scope.data).toEqual(jasmine.any(Array));
-      return expect(scope.data.length).toBe > 0;
-    });
     it("should have D3 library", function() {
       return expect(d3).not.toBeNull;
     });
@@ -149,25 +156,28 @@
       scope.dcPieChart = dc.pieChart('#dcPie');
       return expect(scope.dcPieChart).not.toBeNull;
     });
+    it("should load measures from scope", function() {
+      return expect(scope.measures).toBeNull;
+    });
+    it("should load dimensions from scope", function() {
+      return expect(scope.dimensions).toBeNull;
+    });
+    it("should change scope dcPie and get an Object", function() {
+      return expect(scope.dcPie).toEqual(jasmine.any(Object));
+    });
     it("should call create method", function() {
       spyOn(scope, 'create').andCallThrough();
       scope.create();
+      scope.dcPieChart = dc.pieChart('#dcPie');
+      expect(scope.dcPieChart.dimension).not.toBeNull;
+      expect(scope.dcPieChart.sum).not.toBeNull;
+      scope.dcPieChart.dimension(scope.dcPie.dimension).group(scope.dcPie.sum);
       return expect(scope.create).toHaveBeenCalled();
     });
-    return it("should populate groups with crossfilter, should populate dateDimensions with groups agrupment of date and render", function() {
-      var dateDimensions, groups, totalSum;
-      scope.dcPieChart = dc.pieChart('#dcPie');
-      groups = crossfilter(scope.data);
-      expect(groups).not.toBeNull;
-      dateDimensions = groups.dimension(function(d) {
-        return d['DATETIME:date'];
-      });
-      expect(dateDimensions).not.toBeNull;
-      totalSum = dateDimensions.group().reduceSum(function(d) {
-        return d['DIMENSION:Asset/Content Flavor'];
-      });
-      expect(totalSum).not.toBeNull;
-      return scope.dcPieChart.width(element.width()).height(scope.height).dimension(dateDimensions).group(totalSum);
+    return it("should call setMetrics method", function() {
+      spyOn(scope, 'setMetrics').andCallThrough();
+      scope.setMetrics();
+      return expect(scope.setMetrics).toHaveBeenCalled();
     });
   });
 

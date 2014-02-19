@@ -2,11 +2,13 @@
 (function() {
   "use strict";
   describe("Directive: Dc-Line", function() {
-    var attrs, controller, element, scope;
+    var data, dataResponse, dimension, element, measure, scope;
     scope = void 0;
     element = void 0;
-    attrs = void 0;
-    controller = void 0;
+    data = void 0;
+    dataResponse = void 0;
+    dimension = void 0;
+    measure = void 0;
     beforeEach(function() {
       module('dcModule.templates');
     });
@@ -15,7 +17,7 @@
     });
     beforeEach(inject(function($rootScope) {
       scope = $rootScope.$new();
-      scope.data = [
+      dataResponse = [
         {
           "DATETIME:date": "9/27/13",
           "MEASURE:Units": 1,
@@ -120,6 +122,18 @@
           "DIMENSION:Asset/Content Flavor": "SD"
         }
       ];
+      data = crossfilter(dataResponse);
+      dimension = data.dimension(function(d) {
+        return d['DATETIME:date'];
+      });
+      measure = dimension.group().reduceSum(function(d) {
+        return d['MEASURE:Customer Price'];
+      });
+      scope.dcLine = {
+        dimensions: dimension,
+        sum: measure
+      };
+      scope.setMetrics = function() {};
       scope.create = function() {};
     }));
     it("should start directive", inject(function($compile) {
@@ -127,12 +141,11 @@
       element = $compile(element)(scope);
       return expect(element.html()).not.toBeNull;
     }));
-    it("should load data from scope", function() {
-      return expect(scope.data).toBeNull;
+    it("should load dcLine from scope", function() {
+      return expect(scope.dcLine).toBeNull;
     });
     it("should change scope data and get an array", function() {
-      expect(scope.data).toEqual(jasmine.any(Array));
-      return expect(scope.data.length).toBe > 0;
+      return expect(scope.dcLine).toEqual(jasmine.any(Object));
     });
     it("should have D3 library", function() {
       return expect(d3).not.toBeNull;
@@ -149,29 +162,28 @@
       scope.dcLineChart = dc.lineChart('#dcLine');
       return expect(scope.dcLineChart).not.toBeNull;
     });
+    it("should load measures from scope", function() {
+      return expect(scope.measures).toBeNull;
+    });
+    it("should load dimensions from scope", function() {
+      return expect(scope.dimensions).toBeNull;
+    });
+    it("should change scope dcLine and get an Object", function() {
+      return expect(scope.dcLine).toEqual(jasmine.any(Object));
+    });
     it("should call create method", function() {
       spyOn(scope, 'create').andCallThrough();
       scope.create();
+      scope.dcLineChart = dc.lineChart('#dcLine');
+      expect(scope.dcLineChart.dimension).not.toBeNull;
+      expect(scope.dcLineChart.sum).not.toBeNull;
+      scope.dcLineChart.width(750).height(200).dimension(scope.dcLine.dimension).group(scope.dcLine.sum).x(d3.time.scale().domain([scope.dcLine.minDate, scope.dcLine.maxDate])).yAxisLabel("Total").xAxisLabel("Data");
       return expect(scope.create).toHaveBeenCalled();
     });
-    return it("should populate groups with crossfilter, should populate dateDimensions with groups agrupment of date and render", function() {
-      var dateDimensions, groups, maxDate, minDate, totalSum;
-      scope.dcLineChart = dc.lineChart('#dcLine');
-      groups = crossfilter(scope.data);
-      expect(groups).not.toBeNull;
-      dateDimensions = groups.dimension(function(d) {
-        return d['DATETIME:date'];
-      });
-      expect(dateDimensions).not.toBeNull;
-      totalSum = dateDimensions.group().reduceSum(function(d) {
-        return d['MEASURE:Customer Price'];
-      });
-      expect(totalSum).not.toBeNull;
-      minDate = dateDimensions.bottom(1)[0].date;
-      maxDate = dateDimensions.top(1)[0].date;
-      expect(minDate).not.toBeNull;
-      expect(maxDate).not.toBeNull;
-      return scope.dcLineChart.width(750).height(200).dimension(dateDimensions).group(totalSum).x(d3.time.scale().domain([new Date(minDate), new Date(maxDate)])).yAxisLabel("Total").xAxisLabel("Data");
+    return it("should call setMetrics method", function() {
+      spyOn(scope, 'setMetrics').andCallThrough();
+      scope.setMetrics();
+      return expect(scope.setMetrics).toHaveBeenCalled();
     });
   });
 

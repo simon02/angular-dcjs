@@ -137,6 +137,9 @@
       $httpBackend.verifyNoOutstandingExpectation();
       return $httpBackend.verifyNoOutstandingRequest();
     });
+    it("should be an array in dimensions", function() {
+      return expect($scope.dimensions).toEqual(jasmine.any(Array));
+    });
     it("should be an array in measures", function() {
       return expect($scope.measures).toEqual(jasmine.any(Array));
     });
@@ -155,8 +158,34 @@
       });
     });
     it("should populate rows", function() {
-      $scope.rows = dataResponse;
-      return expect($scope.rows).toEqual(jasmine.any(Array));
+      $scope.rows = crossfilter(dataResponse);
+      return expect($scope.rows).toEqual(jasmine.any(Object));
+    });
+    it("should populate lineChartDim", function() {
+      $scope.rows = crossfilter(dataResponse);
+      $scope.lineChartDim = $scope.rows.dimension(function(d) {
+        return d['DATETIME:date'];
+      });
+      return expect($scope.lineChartDim).toEqual(jasmine.any(Object));
+    });
+    it("should populate linePieDim", function() {
+      $scope.rows = crossfilter(dataResponse);
+      $scope.linePieDim = $scope.rows.dimension(function(d) {
+        return d['DIMENSION:Asset/Content Flavor'];
+      });
+      return expect($scope.linePieDim).toEqual(jasmine.any(Object));
+    });
+    it("should call setChartDim", function() {
+      $scope.rows = crossfilter(dataResponse);
+      $scope.lineChartDim = $scope.rows.dimension(function(d) {
+        return d['DATETIME:date'];
+      });
+      $scope.pieChartDim = $scope.rows.dimension(function(d) {
+        return d['DIMENSION:Asset/Content Flavor'];
+      });
+      spyOn($scope, 'setChartDim').andCallThrough();
+      $scope.setChartDim();
+      return expect($scope.setChartDim).toHaveBeenCalled();
     });
     it("should call identifyHeaders", function() {
       spyOn($scope, 'identifyHeaders').andCallThrough();
@@ -189,22 +218,18 @@
     it("should add dimensions", function() {
       return expect($scope.dimensions.length).toBe > 0;
     });
+    it("should add datetime", function() {
+      return expect($scope.datetime.length).toBe > 0;
+    });
     it("should add an input value", function() {
       spyOn(Debug, 'input').andCallThrough();
       Debug.input('Test');
       return expect(Debug.input).toHaveBeenCalled();
     });
-    it("should call output and get more than one item in array", function() {
+    return it("should call output and get more than one item in array", function() {
       spyOn(Debug, 'output').andCallThrough();
       expect(Debug.output().length).toBe > 0;
       return expect(Debug.output).toHaveBeenCalled();
-    });
-    return it("should populate fields for filters", function() {
-      $scope.rows = crossfilter(dataResponse);
-      expect($scope.rows).not.ToBeNull;
-      spyOn($scope, 'createFilters').andCallThrough();
-      $scope.createFilters();
-      return expect($scope.createFilters).toHaveBeenCalled;
     });
   });
 
