@@ -24,8 +24,8 @@ directive "dcPie", ()->
       $scope.dcPieChart.
         width(element.width()).
         height($scope.height).
-        dimension($scope.dcPie.dimension()).
-        group($scope.dcPie.sum())
+        dimension($scope.dcPie.dimension).
+        group($scope.dcPie.sum)
 
       $scope.dcPieChart.render()
       return

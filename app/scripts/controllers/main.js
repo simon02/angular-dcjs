@@ -23,8 +23,14 @@
               d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
             });
             $scope.rows = crossfilter(response.data);
-            $scope.myDim = $scope.rows.dimension(function(d) {
+            $scope.lineChart = $scope.rows.dimension(function(d) {
               return d['DATETIME:date'];
+            });
+            $scope.pieChart = $scope.rows.dimension(function(d) {
+              return d['DIMENSION:Asset/Content Flavor'];
+            });
+            $scope.pieChart2 = $scope.rows.dimension(function(d) {
+              return d['DIMENSION:Title'];
             });
             $scope.setChartDim();
             $scope.identifyHeaders(response.data);
@@ -38,46 +44,24 @@
       };
       $scope.setChartDim = function() {
         $scope.lineChartOpts = {
-          dimension: function() {
-            return $scope.rows.dimension(function(d) {
-              return d['DATETIME:date'];
-            });
-          },
-          sum: function() {
-            return this.dimension().group().reduceSum(function(d) {
-              return d['MEASURE:Customer Price'];
-            });
-          },
-          minDate: function() {
-            return this.dimension().bottom(1)[0]['DATETIME:date'];
-          },
-          maxDate: function() {
-            return this.dimension().top(1)[0]['DATETIME:date'];
-          }
+          dimension: $scope.lineChart,
+          sum: $scope.lineChart.group().reduceSum(function(d) {
+            return d['MEASURE:Customer Price'];
+          }),
+          minDate: $scope.lineChart.bottom(1)[0]['DATETIME:date'],
+          maxDate: $scope.lineChart.top(1)[0]['DATETIME:date']
         };
         $scope.pieChartOpts = {
-          dimension: function() {
-            return $scope.rows.dimension(function(d) {
-              return d['DIMENSION:Asset/Content Flavor'];
-            });
-          },
-          sum: function() {
-            return this.dimension().group().reduceSum(function(d) {
-              return d['MEASURE:Customer Price'];
-            });
-          }
+          dimension: $scope.pieChart,
+          sum: $scope.pieChart.group().reduceSum(function(d) {
+            return d['MEASURE:Customer Price'];
+          })
         };
         $scope.pieChartOpts2 = {
-          dimension: function() {
-            return $scope.rows.dimension(function(d) {
-              return d['DIMENSION:Title'];
-            });
-          },
-          sum: function() {
-            return this.dimension().group().reduceSum(function(d) {
-              return d['MEASURE:Customer Price'];
-            });
-          }
+          dimension: $scope.pieChart2,
+          sum: $scope.pieChart2.group().reduceSum(function(d) {
+            return d['MEASURE:Customer Price'];
+          })
         };
       };
       $scope.getParams = function(data, index) {
@@ -134,36 +118,6 @@
             return $scope.filterSource.push('DATETIME:' + value + ':' + value2.key.toUTCString());
           });
         });
-      };
-      $scope.useFilter = function() {
-        var input, pattern;
-        if ($scope.include) {
-          $scope.exclude = null;
-          pattern = new RegExp('(.*):(.*):(.*)');
-          input = $scope.include.match(pattern);
-          if (input) {
-            if (input.length >= 4) {
-              if (input[3] !== "") {
-                $scope.filter = {
-                  dimension: input[1] + ':' + input[2],
-                  value: input[3]
-                };
-                $scope.setFilter();
-              } else {
-                if ($scope.newFilter) {
-                  $scope.newFilter.filter(null);
-                }
-              }
-            }
-          }
-        }
-      };
-      $scope.setFilter = function() {
-        $scope.newFilter = $scope.rows.dimension(function(d) {
-          return d['DATETIME:date'];
-        });
-        $scope.newFilter.filter($scope.filter.value);
-        return dc.redrawAll();
       };
       return $scope.removeFilter = function() {};
     }

@@ -27,8 +27,14 @@ controller('MainController', ['$scope','Debug','dataAPI',
           )
 
           $scope.rows = crossfilter(response.data)
-          $scope.myDim = $scope.rows.dimension((d)->
+          $scope.lineChart = $scope.rows.dimension((d)->
             return d['DATETIME:date']
+          )
+          $scope.pieChart = $scope.rows.dimension((d)->
+            return d['DIMENSION:Asset/Content Flavor']
+          )
+          $scope.pieChart2 = $scope.rows.dimension((d)->
+            return d['DIMENSION:Title']
           )
           $scope.setChartDim()
           $scope.identifyHeaders(response.data)
@@ -43,38 +49,24 @@ controller('MainController', ['$scope','Debug','dataAPI',
 
     $scope.setChartDim = ()->
       $scope.lineChartOpts = {
-        dimension: ()->
-          $scope.rows.dimension((d)->
-            return d['DATETIME:date']
-          )
-        sum: ()->
-          @dimension().group().reduceSum((d)->
+        dimension: $scope.lineChart
+        sum: $scope.lineChart.group().reduceSum((d)->
             return d['MEASURE:Customer Price']
           )
-        minDate: ()->
-          @dimension().bottom(1)[0]['DATETIME:date']
-        maxDate: ()->
-          @dimension().top(1)[0]['DATETIME:date']
+        minDate: $scope.lineChart.bottom(1)[0]['DATETIME:date']
+        maxDate: $scope.lineChart.top(1)[0]['DATETIME:date']
       }
 
       $scope.pieChartOpts = {
-        dimension: ()->
-          $scope.rows.dimension((d)->
-            return d['DIMENSION:Asset/Content Flavor']
-          )
-        sum: ()->
-          @dimension().group().reduceSum((d)->
-            return d['MEASURE:Customer Price']
-          )
+        dimension: $scope.pieChart
+        sum: $scope.pieChart.group().reduceSum((d)->
+          return d['MEASURE:Customer Price']
+        )
       }
 
       $scope.pieChartOpts2 = {
-        dimension: ()->
-          $scope.rows.dimension((d)->
-            return d['DIMENSION:Title']
-          )
-        sum: ()->
-          @dimension().group().reduceSum((d)->
+        dimension: $scope.pieChart2
+        sum: $scope.pieChart2.group().reduceSum((d)->
             return d['MEASURE:Customer Price']
           )
       }
@@ -136,34 +128,24 @@ controller('MainController', ['$scope','Debug','dataAPI',
         )
       )
 
-    $scope.useFilter = ()->
-      if($scope.include)
-        $scope.exclude = null
-        pattern = new RegExp('(.*):(.*):(.*)')
-        input = $scope.include.match(pattern)
-        if(input)
-          if(input.length >= 4)
-            if input[3] isnt ""
-              $scope.filter = {
-                dimension: input[1] + ':' + input[2],
-                value: input[3]
-              }
-              $scope.setFilter()
-              return
-            else
-              if $scope.newFilter
-                $scope.newFilter.filter(null)
-                return
-
-    $scope.setFilter = ()->
-      $scope.newFilter = $scope.rows.dimension((d)->
-        d['DATETIME:date']
-      )
-      $scope.newFilter.filter($scope.filter.value)
-
-      dc.redrawAll()
-
-
+#    $scope.useFilter = ()->
+#      if($scope.include)
+#        $scope.exclude = null
+#        pattern = new RegExp('(.*):(.*):(.*)')
+#        input = $scope.include.match(pattern)
+#        if(input)
+#          if(input.length >= 4)
+#            if input[3] isnt ""
+#              $scope.filter = {
+#                dimension: input[1] + ':' + input[2],
+#                value: input[3]
+#              }
+#              $scope.setFilter()
+#              return
+#            else
+#              if $scope.newFilter
+#                $scope.newFilter.filter(null)
+#                return
 
     $scope.removeFilter = ()->
 

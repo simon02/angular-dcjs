@@ -22,7 +22,7 @@
           }
         });
         $scope.create = function() {
-          $scope.dcPieChart.width(element.width()).height($scope.height).dimension($scope.dcPie.dimension()).group($scope.dcPie.sum());
+          $scope.dcPieChart.width(element.width()).height($scope.height).dimension($scope.dcPie.dimension).group($scope.dcPie.sum);
           $scope.dcPieChart.render();
         };
       }
