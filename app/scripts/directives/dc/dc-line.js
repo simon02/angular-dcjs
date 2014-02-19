@@ -15,9 +15,13 @@
       templateUrl: 'dc/line/template.html',
       link: function($scope, element, attrs) {
         var _this = this;
-        $scope.chartId = attrs.id ? attrs.id : 'dcLineDefault';
-        $scope.height = attrs.height ? attrs.height : 150;
-        $scope.dcLineChart = dc.lineChart('#' + $scope.chartId);
+        attrs.$observe('id', function(id) {
+          $scope.chartId = id ? id : 'dcLineDefault';
+          return $scope.dcLineChart = dc.lineChart('#' + $scope.chartId);
+        });
+        attrs.$observe('height', function(height) {
+          return $scope.height = height ? height : 150;
+        });
         $scope.$watch('dimensions', function(dim) {
           if (dim) {
             return $scope.dimFilters = dim;

@@ -11,10 +11,14 @@ directive "dcLine", ()->
     measures: '='
   templateUrl: 'dc/line/template.html'
   link: ($scope, element, attrs)->
+    attrs.$observe('id', (id)->
+      $scope.chartId = if id then id else 'dcLineDefault'
+      $scope.dcLineChart = dc.lineChart('#' + $scope.chartId)
+    )
 
-    $scope.chartId = if attrs.id then attrs.id else 'dcLineDefault'
-    $scope.height = if attrs.height then attrs.height else 150
-    $scope.dcLineChart = dc.lineChart('#' + $scope.chartId)
+    attrs.$observe('height', (height)->
+      $scope.height = if height then height else 150
+    )
 
 
     $scope.$watch('dimensions',(dim)->

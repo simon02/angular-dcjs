@@ -7,6 +7,33 @@
       $scope.measures = [];
       $scope.dimensions = [];
       $scope.datetime = [];
+      $scope.gridsterOpts = {
+        margins: [20, 20],
+        draggable: {
+          enabled: true
+        },
+        resizable: {
+          enabled: false
+        }
+      };
+      $scope.customItems = [
+        {
+          sizeX: 2,
+          sizeY: 1,
+          row: 0,
+          col: 0
+        }, {
+          sizeX: 2,
+          sizeY: 2,
+          row: 0,
+          col: 2
+        }, {
+          sizeX: 1,
+          sizeY: 1,
+          row: 0,
+          col: 4
+        }
+      ];
       $scope.getLog = function() {
         return Debug.output();
       };

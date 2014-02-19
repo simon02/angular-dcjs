@@ -5,15 +5,21 @@ if not dc or not d3 or not crossfilter or not _
 angular.module('dcPie',[]).
 
 directive "dcPie", ()->
+  restrict: 'AC'
+  transclude: true
   scope:
     dcPie: '='
     dimensions: '='
     measures: '='
   templateUrl: 'dc/pie/template.html'
   link: ($scope, element, attrs)->
-    $scope.chartId = if attrs.id then attrs.id else 'dcPieDefault'
-    $scope.height = if attrs.height then attrs.height else 150
-    $scope.dcPieChart = dc.pieChart('#' + $scope.chartId)
+    attrs.$observe('id', (id)->
+      $scope.chartId = if id then id else 'dcPieDefault'
+      $scope.dcPieChart = dc.pieChart('#' + $scope.chartId)
+    )
+    attrs.$observe('height', (height)->
+      $scope.height = if height then height else 150
+    )
 
     $scope.$watch('dimensions',(dim)->
       if dim
