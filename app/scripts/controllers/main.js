@@ -23,6 +23,10 @@
               d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
             });
             $scope.rows = crossfilter(response.data);
+            $scope.myDim = $scope.rows.dimension(function(d) {
+              return d['DATETIME:date'];
+            });
+            $scope.setChartDim();
             $scope.identifyHeaders(response.data);
           }
         });
@@ -31,6 +35,50 @@
         $scope.getParams(data, 'Datetime');
         $scope.getParams(data, 'Dimension');
         return $scope.getParams(data, 'Measure');
+      };
+      $scope.setChartDim = function() {
+        $scope.lineChartOpts = {
+          dimension: function() {
+            return $scope.rows.dimension(function(d) {
+              return d['DATETIME:date'];
+            });
+          },
+          sum: function() {
+            return this.dimension().group().reduceSum(function(d) {
+              return d['MEASURE:Customer Price'];
+            });
+          },
+          minDate: function() {
+            return this.dimension().bottom(1)[0]['DATETIME:date'];
+          },
+          maxDate: function() {
+            return this.dimension().top(1)[0]['DATETIME:date'];
+          }
+        };
+        $scope.pieChartOpts = {
+          dimension: function() {
+            return $scope.rows.dimension(function(d) {
+              return d['DIMENSION:Asset/Content Flavor'];
+            });
+          },
+          sum: function() {
+            return this.dimension().group().reduceSum(function(d) {
+              return d['MEASURE:Customer Price'];
+            });
+          }
+        };
+        $scope.pieChartOpts2 = {
+          dimension: function() {
+            return $scope.rows.dimension(function(d) {
+              return d['DIMENSION:Title'];
+            });
+          },
+          sum: function() {
+            return this.dimension().group().reduceSum(function(d) {
+              return d['MEASURE:Customer Price'];
+            });
+          }
+        };
       };
       $scope.getParams = function(data, index) {
         var items, pattern;
@@ -95,13 +143,27 @@
           input = $scope.include.match(pattern);
           if (input) {
             if (input.length >= 4) {
-              $scope.filter = {
-                dimension: input[1] + ':' + input[2],
-                value: input[3]
-              };
+              if (input[3] !== "") {
+                $scope.filter = {
+                  dimension: input[1] + ':' + input[2],
+                  value: input[3]
+                };
+                $scope.setFilter();
+              } else {
+                if ($scope.newFilter) {
+                  $scope.newFilter.filter(null);
+                }
+              }
             }
           }
         }
+      };
+      $scope.setFilter = function() {
+        $scope.newFilter = $scope.rows.dimension(function(d) {
+          return d['DATETIME:date'];
+        });
+        $scope.newFilter.filter($scope.filter.value);
+        return dc.redrawAll();
       };
       return $scope.removeFilter = function() {};
     }

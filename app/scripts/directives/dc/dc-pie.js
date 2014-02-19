@@ -8,8 +8,7 @@
   angular.module('dcPie', []).directive("dcPie", function() {
     return {
       scope: {
-        data: '=',
-        filter: '='
+        dcPie: '='
       },
       templateUrl: 'dc/pie/template.html',
       link: function($scope, element, attrs) {
@@ -17,39 +16,13 @@
         $scope.chartId = attrs.id ? attrs.id : 'dcPieDefault';
         $scope.height = attrs.height ? attrs.height : 150;
         $scope.dcPieChart = dc.pieChart('#' + $scope.chartId);
-        $scope.$watch('data', function(data) {
-          if (data) {
-            $scope.chartData = data;
+        $scope.$watch('dcPie', function(dcPie) {
+          if (dcPie) {
             $scope.create();
           }
         });
-        $scope.$watch('filter', function(filter) {
-          if (filter) {
-            return $scope.setFilter(filter.dimension, filter.value);
-          }
-        }, true);
-        $scope.setFilter = function(dimension, value) {
-          var newDim;
-          newDim = $scope.chartData.dimension(function(d) {
-            return d[dimension];
-          });
-          $scope.dcPieChart.dimension(newDim);
-          if (value) {
-            $scope.dcPieChart.filter(value);
-          } else {
-            $scope.dcPieChart.filter();
-          }
-          return $scope.dcPieChart.render();
-        };
         $scope.create = function() {
-          var dimensions, totalSum;
-          dimensions = $scope.chartData.dimension(function(d) {
-            return d['DIMENSION:Asset/Content Flavor'];
-          });
-          totalSum = dimensions.group().reduceSum(function(d) {
-            return d['MEASURE:Customer Price'];
-          });
-          $scope.dcPieChart.width(element.width()).height($scope.height).dimension(dimensions).group(totalSum);
+          $scope.dcPieChart.width(element.width()).height($scope.height).dimension($scope.dcPie.dimension()).group($scope.dcPie.sum());
           $scope.dcPieChart.render();
         };
       }

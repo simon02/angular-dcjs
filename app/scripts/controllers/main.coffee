@@ -27,6 +27,10 @@ controller('MainController', ['$scope','Debug','dataAPI',
           )
 
           $scope.rows = crossfilter(response.data)
+          $scope.myDim = $scope.rows.dimension((d)->
+            return d['DATETIME:date']
+          )
+          $scope.setChartDim()
           $scope.identifyHeaders(response.data)
         return
       )
@@ -36,6 +40,45 @@ controller('MainController', ['$scope','Debug','dataAPI',
       $scope.getParams(data, 'Datetime')
       $scope.getParams(data, 'Dimension')
       $scope.getParams(data, 'Measure')
+
+    $scope.setChartDim = ()->
+      $scope.lineChartOpts = {
+        dimension: ()->
+          $scope.rows.dimension((d)->
+            return d['DATETIME:date']
+          )
+        sum: ()->
+          @dimension().group().reduceSum((d)->
+            return d['MEASURE:Customer Price']
+          )
+        minDate: ()->
+          @dimension().bottom(1)[0]['DATETIME:date']
+        maxDate: ()->
+          @dimension().top(1)[0]['DATETIME:date']
+      }
+
+      $scope.pieChartOpts = {
+        dimension: ()->
+          $scope.rows.dimension((d)->
+            return d['DIMENSION:Asset/Content Flavor']
+          )
+        sum: ()->
+          @dimension().group().reduceSum((d)->
+            return d['MEASURE:Customer Price']
+          )
+      }
+
+      $scope.pieChartOpts2 = {
+        dimension: ()->
+          $scope.rows.dimension((d)->
+            return d['DIMENSION:Title']
+          )
+        sum: ()->
+          @dimension().group().reduceSum((d)->
+            return d['MEASURE:Customer Price']
+          )
+      }
+      return
 
     $scope.getParams = (data, index)=>
       if data and index
@@ -100,12 +143,26 @@ controller('MainController', ['$scope','Debug','dataAPI',
         input = $scope.include.match(pattern)
         if(input)
           if(input.length >= 4)
-            $scope.filter = {
-              dimension: input[1] + ':' + input[2],
-              value: input[3]
-            }
-            return
-#      console.log $scope.rows
+            if input[3] isnt ""
+              $scope.filter = {
+                dimension: input[1] + ':' + input[2],
+                value: input[3]
+              }
+              $scope.setFilter()
+              return
+            else
+              if $scope.newFilter
+                $scope.newFilter.filter(null)
+                return
+
+    $scope.setFilter = ()->
+      $scope.newFilter = $scope.rows.dimension((d)->
+        d['DATETIME:date']
+      )
+      $scope.newFilter.filter($scope.filter.value)
+
+      dc.redrawAll()
+
 
 
     $scope.removeFilter = ()->
