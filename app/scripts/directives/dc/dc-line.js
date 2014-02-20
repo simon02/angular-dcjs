@@ -10,7 +10,8 @@
       scope: {
         dcLine: '=',
         dimensions: '=',
-        measures: '='
+        measures: '=',
+        filter: '='
       },
       templateUrl: 'dc/line/template.html',
       link: function($scope, element, attrs) {
@@ -37,13 +38,22 @@
             $scope.create();
           }
         });
+        $scope.$watch('filter', function(filter) {
+          $scope.dcLineChart.filterAll();
+          if (filter) {
+            $scope.dcLineChart.filter(filter);
+          } else {
+            $scope.dcLineChart.filterAll();
+          }
+          return dc.redrawAll($scope.dcLineChart.chartGroup());
+        });
         $scope.create = function() {
           $scope.dcLineChart.width(element.width()).height($scope.height).margins({
             top: 10,
             left: 50,
             right: 10,
             bottom: 50
-          }).dimension($scope.dcLine.dimension).group($scope.dcLine.sum).x(d3.time.scale().domain([$scope.dcLine.minDate, $scope.dcLine.maxDate])).yAxisLabel("Customer Price").xAxisLabel("Date").renderArea(true).elasticY(true);
+          }).dimension($scope.dcLine.dimension).group($scope.dcLine.sum).x(d3.time.scale().domain([$scope.dcLine.minDate, $scope.dcLine.maxDate])).yAxisLabel("Customer Price").xAxisLabel("Date").renderArea(true).renderHorizontalGridLines(true).elasticY(true);
           $scope.dcLineChart.render();
         };
       }

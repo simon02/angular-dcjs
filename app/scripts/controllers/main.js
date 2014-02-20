@@ -45,7 +45,7 @@
             });
             $scope.rows = crossfilter(response.data);
             $scope.lineChartDim = $scope.rows.dimension(function(d) {
-              return d['DATETIME:date'];
+              return [d['DATETIME:date']];
             });
             $scope.pieChartDim = $scope.rows.dimension(function(d) {
               return d['DIMENSION:Asset/Content Flavor'];
@@ -132,6 +132,15 @@
             return $scope.filterSource.push('DATETIME:' + value + ':' + value2.key.toUTCString());
           });
         });
+      };
+      $scope.filter = function() {
+        if ($scope.pieChartOpts.dimension) {
+          $scope.pieChartOpts.dimension.filter(function(d) {
+            if (d === $scope.include) {
+              return d;
+            }
+          });
+        }
       };
       $scope.useFilter = function() {};
       return $scope.removeFilter = function() {};

@@ -8,11 +8,11 @@
   angular.module('dcPie', []).directive("dcPie", function() {
     return {
       restrict: 'AC',
-      transclude: true,
       scope: {
         dcPie: '=',
         dimensions: '=',
-        measures: '='
+        measures: '=',
+        filter: '='
       },
       templateUrl: 'dc/pie/template.html',
       link: function($scope, element, attrs) {
@@ -21,9 +21,7 @@
           $scope.chartId = id ? id : 'dcPieDefault';
           return $scope.dcPieChart = dc.pieChart('#' + $scope.chartId);
         });
-        attrs.$observe('height', function(height) {
-          return $scope.height = height ? height : 150;
-        });
+        $scope.height = attrs.height ? attrs.height : 150;
         $scope.$watch('dimensions', function(dim) {
           if (dim) {
             return $scope.dimFilters = dim;
@@ -33,6 +31,15 @@
           if (measure) {
             return $scope.measureFilters = measure;
           }
+        });
+        $scope.$watch('filter', function(filter) {
+          $scope.dcPieChart.filterAll();
+          if (filter) {
+            $scope.dcPieChart.filter(filter);
+          } else {
+            $scope.dcPieChart.filterAll();
+          }
+          return $scope.dcPieChart.redraw();
         });
         $scope.$watch('dcPie', function(dcPie) {
           if (dcPie) {

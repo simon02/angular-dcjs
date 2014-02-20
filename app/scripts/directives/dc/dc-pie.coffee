@@ -6,11 +6,11 @@ angular.module('dcPie',[]).
 
 directive "dcPie", ()->
   restrict: 'AC'
-  transclude: true
   scope:
     dcPie: '='
     dimensions: '='
     measures: '='
+    filter: '='
   templateUrl: 'dc/pie/template.html'
   link: ($scope, element, attrs)->
     attrs.$observe('id', (id)->
@@ -19,7 +19,6 @@ directive "dcPie", ()->
     )
     attrs.$observe('height', (height)->
       $scope.height = if height then height else 150
-    )
 
     $scope.$watch('dimensions',(dim)->
       if dim
@@ -29,6 +28,15 @@ directive "dcPie", ()->
     $scope.$watch('measures',(measure)->
       if measure
         $scope.measureFilters = measure
+    )
+
+    $scope.$watch('filter',(filter)->
+      $scope.dcPieChart.filterAll()
+      if filter
+        $scope.dcPieChart.filter(filter)
+      else
+        $scope.dcPieChart.filterAll()
+      dc.redrawAll($scope.dcPieChart.chartGroup());
     )
 
     $scope.$watch('dcPie', (dcPie)->
@@ -51,14 +59,11 @@ directive "dcPie", ()->
           group($scope.dcPie.sum)
         $scope.dcPieChart.render()
 
-    $scope.create = ()=>
-
+    $scope.create = ()->
       $scope.dcPieChart.
         width(element.width()).
         height($scope.height).
         dimension($scope.dcPie.dimension).
         group($scope.dcPie.sum)
-
-      $scope.dcPieChart.render()
       return
     return

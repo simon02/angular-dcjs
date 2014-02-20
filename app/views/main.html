@@ -11,26 +11,26 @@
 					<div class="form-group">
 						<label for="include">Dimensions</label>
 						{{ include }}
-						<input id="include" ng-model="include" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}" ng-change="useFilter()">
+						<input id="include" ng-model="include" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}"">
 					</div>
 					<div class="form-group">
 						<label for="exclude">Exclude</label>
 						{{ exclude }}
-						<input id="exclude" ng-model="exclude" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}" ng-change="useFilter()">
+						<input id="exclude" ng-model="exclude" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}">
 					</div>
 				</form>
 			</div>
 			<div class="col-xs-16 col-md-12">
 				<h2>Charts</h2>
 				<h4>LineChart</h4>
-				<div id="dcLine" dc-line="lineChartOpts" height="250"style="display:block;width: 100%;"></div>
+				<div id="dcLine" dc-line="lineChartOpts" height="250" style="display:block;width: 100%;"></div>
 			</div>
 			<div class="col-xs-16 col-md-12">
 				<div gridster="gridsterOpts">
 					<ul>
 						<li gridster-item row="item.position[0]" col="item.position[1]" size-x="item.size.x" size-y="item.size.y" ng-repeat="item in customItems">
 							<h4>PieChart</h4>
-							<div id="dcPie{{ $index }}" dc-pie="pieChartOpts" dimensions="Dimension" measures="Measure" height="200" style="display:block;width: 100%;"></div>
+							<div id="dcPie{{ $index }}" dc-pie="pieChartOpts" dimensions="Dimension" measures="Measure" height="200"  filter="include" style="display:block;width: 100%;"></div>
 						</li>
 					</ul>
 				</div>

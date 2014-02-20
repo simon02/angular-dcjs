@@ -9,6 +9,7 @@ directive "dcLine", ()->
     dcLine: '='
     dimensions: '='
     measures: '='
+    filter: '='
   templateUrl: 'dc/line/template.html'
   link: ($scope, element, attrs)->
     attrs.$observe('id', (id)->
@@ -37,6 +38,15 @@ directive "dcLine", ()->
         return
     )
 
+    $scope.$watch('filter',(filter)->
+      $scope.dcLineChart.filterAll()
+      if filter
+        $scope.dcLineChart.filter(filter)
+      else
+        $scope.dcLineChart.filterAll()
+      dc.redrawAll($scope.dcLineChart.chartGroup());
+    )
+
     $scope.create = ()=>
       $scope.dcLineChart.
         width(element.width()).
@@ -48,6 +58,7 @@ directive "dcLine", ()->
         yAxisLabel("Customer Price").
         xAxisLabel("Date").
         renderArea(true).
+        renderHorizontalGridLines(true).
         elasticY(true)
 
       $scope.dcLineChart.render()

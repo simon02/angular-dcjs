@@ -36,7 +36,7 @@ controller('MainController', ['$scope','Debug','dataAPI',
 
           $scope.rows = crossfilter(response.data)
           $scope.lineChartDim = $scope.rows.dimension((d)->
-            return d['DATETIME:date']
+            return [d['DATETIME:date']]
           )
           $scope.pieChartDim = $scope.rows.dimension((d)->
             return d['DIMENSION:Asset/Content Flavor']
@@ -127,6 +127,15 @@ controller('MainController', ['$scope','Debug','dataAPI',
           )
         )
       )
+
+    $scope.filter = ()->
+      if $scope.pieChartOpts.dimension
+        $scope.pieChartOpts.dimension.filter((d)->
+          if d is $scope.include
+            d
+        )
+        return
+
 
     $scope.useFilter = ()->
 #      if($scope.include)
