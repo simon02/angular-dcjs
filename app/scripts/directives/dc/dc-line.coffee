@@ -51,13 +51,12 @@ directive "dcLine", ()->
         margins({ top: 10, left: 50, right: 10, bottom: 50 }).
         dimension($scope.dcLine.dimension).
         group($scope.dcLine.sum).
-        x(d3.time.scale().domain([$scope.dcLine.minDate,$scope.dcLine.maxDate])).
+        x(d3.time.scale().domain([$scope.dcLine.min,$scope.dcLine.max])).
         yAxisLabel("Customer Price").
         xAxisLabel("Date").
         renderArea(true).
         renderHorizontalGridLines(true).
         elasticY(true)
-
       $scope.dcLineChart.render()
       return
     return

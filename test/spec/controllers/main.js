@@ -168,6 +168,13 @@
       });
       return expect($scope.lineChartDim).toEqual(jasmine.any(Object));
     });
+    it("should populate composeChartDim", function() {
+      $scope.rows = crossfilter(dataResponse);
+      $scope.composeChartDim = $scope.rows.dimension(function(d) {
+        return d['DATETIME:date'];
+      });
+      return expect($scope.composeChartDim).toEqual(jasmine.any(Object));
+    });
     it("should populate linePieDim", function() {
       $scope.rows = crossfilter(dataResponse);
       $scope.linePieDim = $scope.rows.dimension(function(d) {
@@ -182,6 +189,9 @@
       });
       $scope.pieChartDim = $scope.rows.dimension(function(d) {
         return d['DIMENSION:Asset/Content Flavor'];
+      });
+      $scope.composeChartDim = $scope.rows.dimension(function(d) {
+        return d['DATETIME:date'];
       });
       spyOn($scope, 'setChartDim').andCallThrough();
       $scope.setChartDim();

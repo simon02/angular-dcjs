@@ -1,1 +1,1 @@
-angular.module "dcModule", ['dcLine','dcPie','dcModule.templates']
+angular.module "dcModule", ['dcLine','dcPie','dcCompose','dcModule.templates']

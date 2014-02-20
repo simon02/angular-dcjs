@@ -6,8 +6,8 @@ run(($templateCache)->
     "<div id='{{ chartId }}' class='line-chart'>"+
     "</div>"
 
-  $templateCache.put "dc/series/template.html",
-    "<div id='{{ chartId }}' class='series-chart'>"+
+  $templateCache.put "dc/compose/template.html",
+    "<div id='{{ chartId }}' class='compose-chart'>"+
     "</div>"
 
   $templateCache.put "dc/pie/template.html",

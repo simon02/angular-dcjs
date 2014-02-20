@@ -72,6 +72,13 @@ describe "Controller:MainController", ()->
     )
     expect($scope.lineChartDim).toEqual jasmine.any(Object)
 
+  it "should populate composeChartDim", ()->
+    $scope.rows = crossfilter(dataResponse)
+    $scope.composeChartDim = $scope.rows.dimension((d)->
+      return d['DATETIME:date']
+    )
+    expect($scope.composeChartDim).toEqual jasmine.any(Object)
+
   it "should populate linePieDim", ()->
     $scope.rows = crossfilter(dataResponse)
     $scope.linePieDim = $scope.rows.dimension((d)->
@@ -86,6 +93,9 @@ describe "Controller:MainController", ()->
     )
     $scope.pieChartDim = $scope.rows.dimension((d)->
       return d['DIMENSION:Asset/Content Flavor']
+    )
+    $scope.composeChartDim = $scope.rows.dimension((d)->
+      return d['DATETIME:date']
     )
     spyOn($scope,'setChartDim').andCallThrough()
     $scope.setChartDim()

@@ -39,8 +39,8 @@ controller('MainController', ['$scope','Debug','dataAPI',
             return d['DATETIME:date']
           )
 
-          $scope.seriesChartDim = $scope.rows.dimension((d)->
-            return [d['DATETIME:date'] , d['DIMENSION:Asset/Content Flavor']]
+          $scope.composeChartDim = $scope.rows.dimension((d)->
+            return d['DATETIME:date']
           )
           $scope.pieChartDim = $scope.rows.dimension((d)->
             return d['DIMENSION:Asset/Content Flavor']
@@ -58,23 +58,38 @@ controller('MainController', ['$scope','Debug','dataAPI',
       $scope.getParams(data, 'Measure')
 
     $scope.setChartDim = ()->
-      $scope.seriesChartOpts = {
+      $scope.composeChartOpts = {
         data: $scope.rows
-        dimension: $scope.seriesChartDim
-        sum: $scope.seriesChartDim.group().reduceSum((d)->
-          return d['MEASURE:Customer Price']
-        )
-        minDate: $scope.seriesChartDim.bottom(1)[0]['DATETIME:date']
-        maxDate: $scope.seriesChartDim.top(1)[0]['DATETIME:date']
+        dimension: $scope.composeChartDim
+        sum:
+          title: ["Price","Units"]
+          object: $scope.composeChartDim.group().reduce(
+            (p, v)->
+              p.Price += +v['MEASURE:Customer Price']
+              p.Units += +v['MEASURE:Units']
+              return p
+            (p, v)->
+              p.Price -= +v['MEASURE:Customer Price']
+              p.Units -= +v['MEASURE:Units']
+              return p
+            ()->
+              return {
+                Price: 0
+                Units: 0
+              }
+          )
+        min: $scope.composeChartDim.bottom(1)[0]['DATETIME:date']
+        max: $scope.composeChartDim.top(1)[0]['DATETIME:date']
       }
+
       $scope.lineChartOpts = {
         data: $scope.rows
         dimension: $scope.lineChartDim
         sum: $scope.lineChartDim.group().reduceSum((d)->
             return d['MEASURE:Customer Price']
           )
-        minDate: $scope.lineChartDim.bottom(1)[0]['DATETIME:date']
-        maxDate: $scope.lineChartDim.top(1)[0]['DATETIME:date']
+        min: $scope.lineChartDim.bottom(1)[0]['DATETIME:date']
+        max: $scope.lineChartDim.top(1)[0]['DATETIME:date']
       }
 
       $scope.pieChartOpts = {
