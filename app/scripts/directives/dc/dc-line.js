@@ -17,12 +17,9 @@
       link: function($scope, element, attrs) {
         var _this = this;
         attrs.$observe('id', function(id) {
-          $scope.chartId = id ? id : 'dcLineDefault';
-          return $scope.dcLineChart = dc.lineChart('#' + $scope.chartId);
+          return $scope.chartId = id ? id : 'dcLineDefault';
         });
-        attrs.$observe('height', function(height) {
-          return $scope.height = height ? height : 150;
-        });
+        $scope.height = attrs.height ? attrs.height : 150;
         $scope.$watch('dimensions', function(dim) {
           if (dim) {
             return $scope.dimFilters = dim;
@@ -39,15 +36,16 @@
           }
         });
         $scope.$watch('filter', function(filter) {
-          $scope.dcLineChart.filterAll();
-          if (filter) {
-            $scope.dcLineChart.filter(filter);
-          } else {
+          if ($scope.dcLineChart) {
             $scope.dcLineChart.filterAll();
+            if (filter) {
+              $scope.dcLineChart.filter(filter);
+            }
+            return $scope.dcLineChart.redraw();
           }
-          return dc.redrawAll($scope.dcLineChart.chartGroup());
         });
         $scope.create = function() {
+          $scope.dcLineChart = dc.lineChart('#' + $scope.chartId);
           $scope.dcLineChart.width(element.width()).height($scope.height).margins({
             top: 10,
             left: 50,

@@ -13,12 +13,10 @@ directive "dcPie", ()->
     filter: '='
   templateUrl: 'dc/pie/template.html'
   link: ($scope, element, attrs)->
+
     attrs.$observe('id', (id)->
       $scope.chartId = if id then id else 'dcPieDefault'
-      $scope.dcPieChart = dc.pieChart('#' + $scope.chartId)
     )
-    attrs.$observe('height', (height)->
-      $scope.height = if height then height else 150
 
     $scope.$watch('dimensions',(dim)->
       if dim
@@ -31,12 +29,11 @@ directive "dcPie", ()->
     )
 
     $scope.$watch('filter',(filter)->
-      $scope.dcPieChart.filterAll()
-      if filter
-        $scope.dcPieChart.filter(filter)
-      else
+      if $scope.dcPieChart
         $scope.dcPieChart.filterAll()
-      dc.redrawAll($scope.dcPieChart.chartGroup());
+        if filter
+          $scope.dcPieChart.filter(filter)
+        $scope.dcPieChart.redraw()
     )
 
     $scope.$watch('dcPie', (dcPie)->
@@ -44,6 +41,10 @@ directive "dcPie", ()->
         $scope.create()
         return
     )
+
+    $scope.setHeight = (height)->
+      if $scope.dcPieChart and height
+        $scope.dcPieChart.height(height)
 
     $scope.setMetrics = ()->
       if $scope.dimFilter and $scope.measureFilter
@@ -56,14 +57,16 @@ directive "dcPie", ()->
         )
         $scope.dcPieChart.
           dimension($scope.dcPie.dimension).
-          group($scope.dcPie.sum)
-        $scope.dcPieChart.render()
+          group($scope.dcPie.sum).
+          redraw()
 
     $scope.create = ()->
+      $scope.dcPieChart = dc.pieChart('#' + $scope.chartId)
       $scope.dcPieChart.
-        width(element.width()).
-        height($scope.height).
+        width(attrs.width).
+        height(attrs.height).
         dimension($scope.dcPie.dimension).
-        group($scope.dcPie.sum)
+        group($scope.dcPie.sum).
+        render()
       return
     return

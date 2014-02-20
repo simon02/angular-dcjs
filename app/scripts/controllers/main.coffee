@@ -36,7 +36,11 @@ controller('MainController', ['$scope','Debug','dataAPI',
 
           $scope.rows = crossfilter(response.data)
           $scope.lineChartDim = $scope.rows.dimension((d)->
-            return [d['DATETIME:date']]
+            return d['DATETIME:date']
+          )
+
+          $scope.seriesChartDim = $scope.rows.dimension((d)->
+            return [d['DATETIME:date'] , d['DIMENSION:Asset/Content Flavor']]
           )
           $scope.pieChartDim = $scope.rows.dimension((d)->
             return d['DIMENSION:Asset/Content Flavor']
@@ -54,6 +58,15 @@ controller('MainController', ['$scope','Debug','dataAPI',
       $scope.getParams(data, 'Measure')
 
     $scope.setChartDim = ()->
+      $scope.seriesChartOpts = {
+        data: $scope.rows
+        dimension: $scope.seriesChartDim
+        sum: $scope.seriesChartDim.group().reduceSum((d)->
+          return d['MEASURE:Customer Price']
+        )
+        minDate: $scope.seriesChartDim.bottom(1)[0]['DATETIME:date']
+        maxDate: $scope.seriesChartDim.top(1)[0]['DATETIME:date']
+      }
       $scope.lineChartOpts = {
         data: $scope.rows
         dimension: $scope.lineChartDim

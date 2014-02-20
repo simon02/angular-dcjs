@@ -16,12 +16,9 @@
       },
       templateUrl: 'dc/pie/template.html',
       link: function($scope, element, attrs) {
-        var _this = this;
         attrs.$observe('id', function(id) {
-          $scope.chartId = id ? id : 'dcPieDefault';
-          return $scope.dcPieChart = dc.pieChart('#' + $scope.chartId);
+          return $scope.chartId = id ? id : 'dcPieDefault';
         });
-        $scope.height = attrs.height ? attrs.height : 150;
         $scope.$watch('dimensions', function(dim) {
           if (dim) {
             return $scope.dimFilters = dim;
@@ -33,19 +30,24 @@
           }
         });
         $scope.$watch('filter', function(filter) {
-          $scope.dcPieChart.filterAll();
-          if (filter) {
-            $scope.dcPieChart.filter(filter);
-          } else {
+          if ($scope.dcPieChart) {
             $scope.dcPieChart.filterAll();
+            if (filter) {
+              $scope.dcPieChart.filter(filter);
+            }
+            return $scope.dcPieChart.redraw();
           }
-          return $scope.dcPieChart.redraw();
         });
         $scope.$watch('dcPie', function(dcPie) {
           if (dcPie) {
             $scope.create();
           }
         });
+        $scope.setHeight = function(height) {
+          if ($scope.dcPieChart && height) {
+            return $scope.dcPieChart.height(height);
+          }
+        };
         $scope.setMetrics = function() {
           if ($scope.dimFilter && $scope.measureFilter) {
             $scope.dcPieChart.filterAll();
@@ -55,13 +57,12 @@
             $scope.dcPie.sum = $scope.dcPie.dimension.group().reduceSum(function(d) {
               return d['MEASURE:' + $scope.measureFilter];
             });
-            $scope.dcPieChart.dimension($scope.dcPie.dimension).group($scope.dcPie.sum);
-            return $scope.dcPieChart.render();
+            return $scope.dcPieChart.dimension($scope.dcPie.dimension).group($scope.dcPie.sum).redraw();
           }
         };
         $scope.create = function() {
-          $scope.dcPieChart.width(element.width()).height($scope.height).dimension($scope.dcPie.dimension).group($scope.dcPie.sum);
-          $scope.dcPieChart.render();
+          $scope.dcPieChart = dc.pieChart('#' + $scope.chartId);
+          $scope.dcPieChart.width(attrs.width).height(attrs.height).dimension($scope.dcPie.dimension).group($scope.dcPie.sum).render();
         };
       }
     };

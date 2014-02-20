@@ -45,7 +45,10 @@
             });
             $scope.rows = crossfilter(response.data);
             $scope.lineChartDim = $scope.rows.dimension(function(d) {
-              return [d['DATETIME:date']];
+              return d['DATETIME:date'];
+            });
+            $scope.seriesChartDim = $scope.rows.dimension(function(d) {
+              return [d['DATETIME:date'], d['DIMENSION:Asset/Content Flavor']];
             });
             $scope.pieChartDim = $scope.rows.dimension(function(d) {
               return d['DIMENSION:Asset/Content Flavor'];
@@ -61,6 +64,15 @@
         return $scope.getParams(data, 'Measure');
       };
       $scope.setChartDim = function() {
+        $scope.seriesChartOpts = {
+          data: $scope.rows,
+          dimension: $scope.seriesChartDim,
+          sum: $scope.seriesChartDim.group().reduceSum(function(d) {
+            return d['MEASURE:Customer Price'];
+          }),
+          minDate: $scope.seriesChartDim.bottom(1)[0]['DATETIME:date'],
+          maxDate: $scope.seriesChartDim.top(1)[0]['DATETIME:date']
+        };
         $scope.lineChartOpts = {
           data: $scope.rows,
           dimension: $scope.lineChartDim,

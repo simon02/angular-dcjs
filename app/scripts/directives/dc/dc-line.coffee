@@ -14,12 +14,9 @@ directive "dcLine", ()->
   link: ($scope, element, attrs)->
     attrs.$observe('id', (id)->
       $scope.chartId = if id then id else 'dcLineDefault'
-      $scope.dcLineChart = dc.lineChart('#' + $scope.chartId)
     )
 
-    attrs.$observe('height', (height)->
-      $scope.height = if height then height else 150
-    )
+    $scope.height = if attrs.height then attrs.height else 150
 
 
     $scope.$watch('dimensions',(dim)->
@@ -39,15 +36,15 @@ directive "dcLine", ()->
     )
 
     $scope.$watch('filter',(filter)->
-      $scope.dcLineChart.filterAll()
-      if filter
-        $scope.dcLineChart.filter(filter)
-      else
+      if $scope.dcLineChart
         $scope.dcLineChart.filterAll()
-      dc.redrawAll($scope.dcLineChart.chartGroup());
+        if filter
+          $scope.dcLineChart.filter(filter)
+        $scope.dcLineChart.redraw()
     )
 
     $scope.create = ()=>
+      $scope.dcLineChart = dc.lineChart('#' + $scope.chartId)
       $scope.dcLineChart.
         width(element.width()).
         height($scope.height).
