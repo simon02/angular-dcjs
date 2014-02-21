@@ -138,12 +138,6 @@
       $httpBackend.verifyNoOutstandingExpectation();
       return $httpBackend.verifyNoOutstandingRequest();
     });
-    it("should be an array in dimensions", function() {
-      return expect($scope.dimensions).toEqual(jasmine.any(Array));
-    });
-    it("should be an array in measures", function() {
-      return expect($scope.measures).toEqual(jasmine.any(Array));
-    });
     it("Debug should be loaded", function() {
       return expect(Debug).not.toBeNull;
     });
@@ -235,15 +229,6 @@
       spyOn(Debug, 'input').andCallThrough();
       Debug.input();
       return expect(Debug.input).toHaveBeenCalled();
-    });
-    it("should add measures", function() {
-      return expect($scope.measures.length).toBe > 0;
-    });
-    it("should add dimensions", function() {
-      return expect($scope.dimensions.length).toBe > 0;
-    });
-    it("should add datetime", function() {
-      return expect($scope.datetime.length).toBe > 0;
     });
     it("should add an input value", function() {
       spyOn(Debug, 'input').andCallThrough();

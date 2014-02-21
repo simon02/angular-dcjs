@@ -4,9 +4,8 @@
 
   angular.module('angularDcjsApp').controller('MainController', [
     '$scope', '$filter', '$log', 'Debug', 'dataAPI', function($scope, $filter, $log, Debug, dataAPI) {
-      $scope.measures = [];
-      $scope.dimensions = [];
-      $scope.datetime = [];
+      $scope.filterSearch = [];
+      $scope.include = {};
       $scope.gridsterOpts = {
         margins: [20, 20],
         draggable: {
@@ -41,9 +40,9 @@
         return rows.length > 0;
       };
       $scope.render = function() {
-        if ($scope.include) {
-          if ($scope.checkFilter($filter('filter')($scope.sourceData, $scope.include))) {
-            $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.include));
+        if ($scope.filter) {
+          if ($scope.checkFilter($filter('filter')($scope.sourceData, $scope.filter))) {
+            $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.filter));
           } else {
             $log.warn("No content Found");
             return false;
@@ -141,6 +140,7 @@
             }
           });
           if (items.length > 0) {
+            $scope.setFilterSearch(items, index.toUpperCase());
             $scope[index] = items;
             return Debug.input({
               name: index,
@@ -150,6 +150,11 @@
         }
       };
       $scope.retrieveData();
+      $scope.setFilterSearch = function(items, index) {
+        return items.forEach(function(item) {
+          return $scope.filterSearch.push(index + ':' + item);
+        });
+      };
       $scope.generateDimensions = function() {
         return angular.forEach($scope.Dimension, function(value, key) {
           var dimensions;
@@ -183,9 +188,16 @@
           });
         });
       };
-      $scope.$watch('include', function(include) {
-        return $scope.render();
-      });
+      $scope.$watch('include', function(include, oldInclude) {
+        if (include.type) {
+          if (include.type !== oldInclude.type) {
+            include.text = "";
+          }
+          $scope.filter = {};
+          $scope.filter[include.type] = include.text ? include.text : "";
+          return $scope.render();
+        }
+      }, true);
     }
   ]);
 

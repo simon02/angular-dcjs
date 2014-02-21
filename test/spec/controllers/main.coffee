@@ -43,12 +43,6 @@ describe "Controller:MainController", ()->
     $httpBackend.verifyNoOutstandingRequest()
   )
 
-  it "should be an array in dimensions", ()->
-    expect($scope.dimensions).toEqual jasmine.any(Array)
-
-  it "should be an array in measures", ()->
-    expect($scope.measures).toEqual jasmine.any(Array)
-
   it "Debug should be loaded", ()->
     expect(Debug).not.toBeNull
 
@@ -141,15 +135,6 @@ describe "Controller:MainController", ()->
     spyOn(Debug,'input').andCallThrough()
     Debug.input()
     expect(Debug.input).toHaveBeenCalled()
-
-  it "should add measures", ()->
-    expect($scope.measures.length).toBe > 0
-
-  it "should add dimensions", ()->
-    expect($scope.dimensions.length).toBe > 0
-
-  it "should add datetime", ()->
-    expect($scope.datetime.length).toBe > 0
 
   it "should add an input value", ()->
     spyOn(Debug, 'input').andCallThrough()

@@ -3,9 +3,8 @@ angular.module('angularDcjsApp').
 controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
   ($scope, $filter, $log, Debug, dataAPI)=>
 
-    $scope.measures = []
-    $scope.dimensions = []
-    $scope.datetime= []
+    $scope.filterSearch = []
+    $scope.include = {}
 
     $scope.gridsterOpts = {
       margins: [20, 20]
@@ -30,9 +29,9 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
       return rows.length > 0
 
     $scope.render = ()->
-      if($scope.include)
-        if($scope.checkFilter($filter('filter')($scope.sourceData, $scope.include)))
-          $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.include))
+      if($scope.filter)
+        if($scope.checkFilter($filter('filter')($scope.sourceData, $scope.filter)))
+          $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.filter))
         else
           $log.warn("No content Found")
           return false
@@ -129,6 +128,7 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
             items.push(input[1])
         )
         if items.length > 0
+          $scope.setFilterSearch(items, index.toUpperCase())
           $scope[index] = items
 
           Debug.input({
@@ -137,6 +137,11 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
           })
 
     $scope.retrieveData()
+
+    $scope.setFilterSearch = (items, index)->
+      items.forEach((item)->
+        $scope.filterSearch.push(index + ':' + item)
+      )
 
 
     $scope.generateDimensions = ()->
@@ -175,9 +180,14 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
         )
       )
 
-    $scope.$watch('include', (include)->
-      $scope.render()
-    )
+    $scope.$watch('include', (include, oldInclude)->
+      if include.type
+        if include.type isnt oldInclude.type
+          include.text = ""
+        $scope.filter = {}
+        $scope.filter[include.type] = if include.text then include.text else ""
+        $scope.render()
+    , true)
     return
 
 ])

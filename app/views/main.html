@@ -9,9 +9,10 @@
 				<h2>Filters</h2>
 				<form role="form">
 					<div class="form-group">
-						<label for="include">Dimensions</label>
-						{{ include }}
-						<input id="include" ng-model="include" placeholder="Ex: DIMENSION:Title:1" ng-style="{'width':'400px'}"">
+						<label for="include">Filter</label>
+						<select name="" ng-options="item as item for item in filterSearch" ng-model="include.type"></select>
+						{{ filter }}
+						<input id="include" ng-model="include.text" placeholder="Ex: HD" ng-style="{'width':'400px'}">
 					</div>
 					<!--<div class="form-group">-->
 						<!--<label for="exclude">Exclude</label>-->
