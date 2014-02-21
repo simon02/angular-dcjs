@@ -48,14 +48,8 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
         return d['DIMENSION:Asset/Content Flavor']
       )
 
-      renderers = jQuery.extend(jQuery.pivotUtilities.renderers,
-        jQuery.pivotUtilities.gchart_renderers)
-
       jQuery("#pivottable").pivotUI(
         $scope.lineChartDim.top(Infinity)
-        {
-          renderers: renderers
-        }
       )
       $scope.setChartDim()
 
@@ -75,7 +69,7 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
       return
 
 
-      
+
     $scope.identifyHeaders = (data) =>
       $scope.getParams(data, 'Datetime')
       $scope.getParams(data, 'Dimension')
