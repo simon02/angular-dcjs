@@ -51,7 +51,7 @@
             right: 50,
             bottom: 30,
             left: 60
-          }).dimension($scope.dcCompose.dimension).group($scope.dcCompose.sum.object, $scope.dcCompose.sum.title[0]).x(d3.time.scale().domain([$scope.dcCompose.min, $scope.dcCompose.max])).renderHorizontalGridLines(true).elasticY(true).brushOn(true).valueAccessor(function(d) {
+          }).dimension($scope.dcCompose.dimension).group($scope.dcCompose.sum.object, $scope.dcCompose.sum.title[0]).x(d3.time.scale().domain([$scope.dcCompose.min, $scope.dcCompose.max])).renderArea(true).renderHorizontalGridLines(true).elasticY(true).brushOn(true).valueAccessor(function(d) {
             return d.value[$scope.dcCompose.sum.title[0]];
           }).stack($scope.dcCompose.sum.object, $scope.dcCompose.sum.title[1], function(d) {
             return d.value[$scope.dcCompose.sum.title[1]];

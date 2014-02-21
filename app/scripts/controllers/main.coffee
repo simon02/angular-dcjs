@@ -18,9 +18,9 @@ controller('MainController', ['$scope','Debug','dataAPI',
     }
 
     $scope.customItems = [
-      { sizeX: 2, sizeY: 1, row: 0, col: 0},
+      { sizeX: 2, sizeY: 2, row: 0, col: 0},
       { sizeX: 2, sizeY: 2, row: 0, col: 2},
-      { sizeX: 1, sizeY: 1, row: 0, col: 4}
+      { sizeX: 2, sizeY: 2, row: 0, col: 4}
     ]
 
     $scope.getLog = ()->
@@ -35,10 +35,10 @@ controller('MainController', ['$scope','Debug','dataAPI',
           )
 
           $scope.rows = crossfilter(response.data)
+
           $scope.lineChartDim = $scope.rows.dimension((d)->
             return d['DATETIME:date']
           )
-
           $scope.composeChartDim = $scope.rows.dimension((d)->
             return d['DATETIME:date']
           )
@@ -58,24 +58,29 @@ controller('MainController', ['$scope','Debug','dataAPI',
       $scope.getParams(data, 'Measure')
 
     $scope.setChartDim = ()->
+
       $scope.composeChartOpts = {
         data: $scope.rows
         dimension: $scope.composeChartDim
         sum:
-          title: ["Price","Units"]
+          title: ["HD","SD"]
           object: $scope.composeChartDim.group().reduce(
             (p, v)->
-              p.Price += +v['MEASURE:Customer Price']
-              p.Units += +v['MEASURE:Units']
+              if(v['DIMENSION:Asset/Content Flavor'] == 'HD')
+                p.HD += +v['MEASURE:Customer Price']
+              if(v['DIMENSION:Asset/Content Flavor'] == 'SD')
+                p.SD += +v['MEASURE:Customer Price']
               return p
             (p, v)->
-              p.Price -= +v['MEASURE:Customer Price']
-              p.Units -= +v['MEASURE:Units']
+              if(v['DIMENSION:Asset/Content Flavor'] == 'HD')
+                p.HD -= +v['MEASURE:Customer Price']
+              if(v['DIMENSION:Asset/Content Flavor'] == 'SD')
+                p.SD -= +v['MEASURE:Customer Price']
               return p
             ()->
               return {
-                Price: 0
-                Units: 0
+                HD: 0
+                SD: 0
               }
           )
         min: $scope.composeChartDim.bottom(1)[0]['DATETIME:date']

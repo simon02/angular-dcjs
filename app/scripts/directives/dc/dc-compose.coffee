@@ -52,6 +52,7 @@ directive "dcCompose", ()->
       dimension($scope.dcCompose.dimension).
       group($scope.dcCompose.sum.object, $scope.dcCompose.sum.title[0]).
       x(d3.time.scale().domain([$scope.dcCompose.min,$scope.dcCompose.max])).
+      renderArea(true).
       renderHorizontalGridLines(true).
       elasticY(true).
       brushOn(true).

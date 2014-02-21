@@ -19,7 +19,7 @@
       $scope.customItems = [
         {
           sizeX: 2,
-          sizeY: 1,
+          sizeY: 2,
           row: 0,
           col: 0
         }, {
@@ -28,8 +28,8 @@
           row: 0,
           col: 2
         }, {
-          sizeX: 1,
-          sizeY: 1,
+          sizeX: 2,
+          sizeY: 2,
           row: 0,
           col: 4
         }
@@ -68,19 +68,27 @@
           data: $scope.rows,
           dimension: $scope.composeChartDim,
           sum: {
-            title: ["Price", "Units"],
+            title: ["HD", "SD"],
             object: $scope.composeChartDim.group().reduce(function(p, v) {
-              p.Price += +v['MEASURE:Customer Price'];
-              p.Units += +v['MEASURE:Units'];
+              if (v['DIMENSION:Asset/Content Flavor'] === 'HD') {
+                p.HD += +v['MEASURE:Customer Price'];
+              }
+              if (v['DIMENSION:Asset/Content Flavor'] === 'SD') {
+                p.SD += +v['MEASURE:Customer Price'];
+              }
               return p;
             }, function(p, v) {
-              p.Price -= +v['MEASURE:Customer Price'];
-              p.Units -= +v['MEASURE:Units'];
+              if (v['DIMENSION:Asset/Content Flavor'] === 'HD') {
+                p.HD -= +v['MEASURE:Customer Price'];
+              }
+              if (v['DIMENSION:Asset/Content Flavor'] === 'SD') {
+                p.SD -= +v['MEASURE:Customer Price'];
+              }
               return p;
             }, function() {
               return {
-                Price: 0,
-                Units: 0
+                HD: 0,
+                SD: 0
               };
             })
           },
