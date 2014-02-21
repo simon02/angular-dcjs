@@ -49,7 +49,6 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
         return d['DIMENSION:Asset/Content Flavor']
       )
       $scope.setChartDim()
-      $scope.identifyHeaders($scope.sourceData)
 
     $scope.retrieveData = ()->
       dataAPI.getData().then((response)->
@@ -58,7 +57,9 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
             d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
             return
           )
+
           $scope.sourceData = response.data
+          $scope.identifyHeaders($scope.sourceData)
           $scope.render()
         return
       )

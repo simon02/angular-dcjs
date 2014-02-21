@@ -60,8 +60,7 @@
         $scope.pieChartDim = $scope.rows.dimension(function(d) {
           return d['DIMENSION:Asset/Content Flavor'];
         });
-        $scope.setChartDim();
-        return $scope.identifyHeaders($scope.sourceData);
+        return $scope.setChartDim();
       };
       $scope.retrieveData = function() {
         dataAPI.getData().then(function(response) {
@@ -70,6 +69,7 @@
               d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
             });
             $scope.sourceData = response.data;
+            $scope.identifyHeaders($scope.sourceData);
             $scope.render();
           }
         });
