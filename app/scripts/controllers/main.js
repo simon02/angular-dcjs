@@ -40,6 +40,7 @@
         return rows.length > 0;
       };
       $scope.render = function() {
+        var renderers;
         if ($scope.filter) {
           if ($scope.checkFilter($filter('filter')($scope.sourceData, $scope.filter))) {
             $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.filter));
@@ -58,6 +59,10 @@
         });
         $scope.pieChartDim = $scope.rows.dimension(function(d) {
           return d['DIMENSION:Asset/Content Flavor'];
+        });
+        renderers = jQuery.extend(jQuery.pivotUtilities.renderers, jQuery.pivotUtilities.gchart_renderers);
+        jQuery("#pivottable").pivotUI($scope.lineChartDim.top(Infinity), {
+          renderers: renderers
         });
         return $scope.setChartDim();
       };

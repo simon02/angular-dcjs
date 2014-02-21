@@ -47,6 +47,16 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
       $scope.pieChartDim = $scope.rows.dimension((d)->
         return d['DIMENSION:Asset/Content Flavor']
       )
+
+      renderers = jQuery.extend(jQuery.pivotUtilities.renderers,
+        jQuery.pivotUtilities.gchart_renderers)
+
+      jQuery("#pivottable").pivotUI(
+        $scope.lineChartDim.top(Infinity)
+        {
+          renderers: renderers
+        }
+      )
       $scope.setChartDim()
 
     $scope.retrieveData = ()->
@@ -188,6 +198,7 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
         $scope.filter[include.type] = if include.text then include.text else ""
         $scope.render()
     , true)
+
     return
 
 ])
