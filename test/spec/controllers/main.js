@@ -127,6 +127,7 @@
             "DIMENSION:Asset/Content Flavor": "SD"
           }
         ];
+        $scope.sourceData = dataResponse;
         MainController = $controller('MainController', {
           '$scope': $scope,
           'Debug': Debug
@@ -146,10 +147,19 @@
     it("Debug should be loaded", function() {
       return expect(Debug).not.toBeNull;
     });
-    it("should call retrieve ", function() {
+    it("should call retrieveData", function() {
       spyOn($scope, 'retrieveData').andCallThrough();
       $scope.retrieveData();
       return expect($scope.retrieveData).toHaveBeenCalled();
+    });
+    it("should see check response data", function() {
+      return expect($scope.sourceData).not.toBeNull;
+    });
+    it("should call render", function() {
+      expect($scope.render).not.toBeNull;
+      spyOn($scope, 'render').andCallThrough();
+      $scope.render();
+      return expect($scope.render).toHaveBeenCalled();
     });
     it("should format dates", function() {
       return dataResponse.forEach(function(d) {
@@ -157,9 +167,13 @@
         return expect(d['DATETIME:date']).not.ToBeNull;
       });
     });
-    it("should populate rows", function() {
-      $scope.rows = crossfilter(dataResponse);
-      return expect($scope.rows).toEqual(jasmine.any(Object));
+    it("should populate sourceData", function() {
+      return expect($scope.sourceData).toEqual(jasmine.any(Object));
+    });
+    it("should call render", function() {
+      spyOn($scope, 'render').andCallThrough();
+      $scope.render();
+      return expect($scope.render).toHaveBeenCalled();
     });
     it("should populate lineChartDim", function() {
       $scope.rows = crossfilter(dataResponse);

@@ -1,7 +1,7 @@
 angular.module('angularDcjsApp').
 
-controller('MainController', ['$scope','Debug','dataAPI',
-  ($scope, Debug, dataAPI)=>
+controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
+  ($scope, $filter, $log, Debug, dataAPI)=>
 
     $scope.measures = []
     $scope.dimensions = []
@@ -26,6 +26,31 @@ controller('MainController', ['$scope','Debug','dataAPI',
     $scope.getLog = ()->
       return Debug.output()
 
+    $scope.checkFilter = (rows)->
+      return rows.length > 0
+
+    $scope.render = ()->
+      if($scope.include)
+        if($scope.checkFilter($filter('filter')($scope.sourceData, $scope.include)))
+          $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.include))
+        else
+          $log.warn("No content Found")
+          return false
+      else
+        $scope.rows = crossfilter($scope.sourceData)
+
+      $scope.lineChartDim = $scope.rows.dimension((d)->
+        return d['DATETIME:date']
+      )
+      $scope.composeChartDim = $scope.rows.dimension((d)->
+        return d['DATETIME:date']
+      )
+      $scope.pieChartDim = $scope.rows.dimension((d)->
+        return d['DIMENSION:Asset/Content Flavor']
+      )
+      $scope.setChartDim()
+      $scope.identifyHeaders($scope.sourceData)
+
     $scope.retrieveData = ()->
       dataAPI.getData().then((response)->
         if response.data
@@ -33,24 +58,12 @@ controller('MainController', ['$scope','Debug','dataAPI',
             d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
             return
           )
-
-          $scope.rows = crossfilter(response.data)
-
-          $scope.lineChartDim = $scope.rows.dimension((d)->
-            return d['DATETIME:date']
-          )
-          $scope.composeChartDim = $scope.rows.dimension((d)->
-            return d['DATETIME:date']
-          )
-          $scope.pieChartDim = $scope.rows.dimension((d)->
-            return d['DIMENSION:Asset/Content Flavor']
-          )
-
-          $scope.setChartDim()
-          $scope.identifyHeaders(response.data)
+          $scope.sourceData = response.data
+          $scope.render()
         return
       )
       return
+
 
     $scope.identifyHeaders = (data) =>
       $scope.getParams(data, 'Datetime')
@@ -161,34 +174,9 @@ controller('MainController', ['$scope','Debug','dataAPI',
         )
       )
 
-    $scope.filter = ()->
-      if $scope.pieChartOpts.dimension
-        $scope.pieChartOpts.dimension.filter((d)->
-          if d is $scope.include
-            d
-        )
-        return
-
-
-    $scope.useFilter = ()->
-#      if($scope.include)
-#        $scope.exclude = null
-#        pattern = new RegExp('(.*):(.*):(.*)')
-#        input = $scope.include.match(pattern)
-#        if(input)
-#          if(input.length >= 4)
-#            if input[3] isnt ""
-#              $scope.filter = {
-#                dimension: input[1] + ':' + input[2],
-#                value: input[3]
-#              }
-#              $scope.setFilter()
-#              return
-#            else
-#              if $scope.newFilter
-#                $scope.newFilter.filter(null)
-#                return
-
-    $scope.removeFilter = ()->
+    $scope.$watch('include', (include)->
+      $scope.render()
+    )
+    return
 
 ])

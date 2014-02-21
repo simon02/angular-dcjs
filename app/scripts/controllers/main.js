@@ -3,7 +3,7 @@
   var _this = this;
 
   angular.module('angularDcjsApp').controller('MainController', [
-    '$scope', 'Debug', 'dataAPI', function($scope, Debug, dataAPI) {
+    '$scope', '$filter', '$log', 'Debug', 'dataAPI', function($scope, $filter, $log, Debug, dataAPI) {
       $scope.measures = [];
       $scope.dimensions = [];
       $scope.datetime = [];
@@ -37,24 +37,40 @@
       $scope.getLog = function() {
         return Debug.output();
       };
+      $scope.checkFilter = function(rows) {
+        return rows.length > 0;
+      };
+      $scope.render = function() {
+        if ($scope.include) {
+          if ($scope.checkFilter($filter('filter')($scope.sourceData, $scope.include))) {
+            $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.include));
+          } else {
+            $log.warn("No content Found");
+            return false;
+          }
+        } else {
+          $scope.rows = crossfilter($scope.sourceData);
+        }
+        $scope.lineChartDim = $scope.rows.dimension(function(d) {
+          return d['DATETIME:date'];
+        });
+        $scope.composeChartDim = $scope.rows.dimension(function(d) {
+          return d['DATETIME:date'];
+        });
+        $scope.pieChartDim = $scope.rows.dimension(function(d) {
+          return d['DIMENSION:Asset/Content Flavor'];
+        });
+        $scope.setChartDim();
+        return $scope.identifyHeaders($scope.sourceData);
+      };
       $scope.retrieveData = function() {
         dataAPI.getData().then(function(response) {
           if (response.data) {
             response.data.forEach(function(d) {
               d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
             });
-            $scope.rows = crossfilter(response.data);
-            $scope.lineChartDim = $scope.rows.dimension(function(d) {
-              return d['DATETIME:date'];
-            });
-            $scope.composeChartDim = $scope.rows.dimension(function(d) {
-              return d['DATETIME:date'];
-            });
-            $scope.pieChartDim = $scope.rows.dimension(function(d) {
-              return d['DIMENSION:Asset/Content Flavor'];
-            });
-            $scope.setChartDim();
-            $scope.identifyHeaders(response.data);
+            $scope.sourceData = response.data;
+            $scope.render();
           }
         });
       };
@@ -167,17 +183,9 @@
           });
         });
       };
-      $scope.filter = function() {
-        if ($scope.pieChartOpts.dimension) {
-          $scope.pieChartOpts.dimension.filter(function(d) {
-            if (d === $scope.include) {
-              return d;
-            }
-          });
-        }
-      };
-      $scope.useFilter = function() {};
-      return $scope.removeFilter = function() {};
+      $scope.$watch('include', function(include) {
+        return $scope.render();
+      });
     }
   ]);
 
