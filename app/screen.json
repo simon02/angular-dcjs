@@ -1,8 +1,16 @@
 [
 	{
-		"name": "Charts"
-
-
-
+		"name": "Charts",
+		"gridster": {
+			"charts": [
+				{
+					"type":"pieChart",
+					"data": [
+						{},
+						{}
+					]
+				}
+			]
+		}
 	}
 ]
