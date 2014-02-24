@@ -16,6 +16,7 @@
     });
     beforeEach(function() {
       inject(function($injector, _Debug_, _dataAPI_) {
+        var dataResponse2;
         Debug = _Debug_;
         dataAPI = _dataAPI_;
         $rootScope = $injector.get('$rootScope');
@@ -127,7 +128,37 @@
             "DIMENSION:Asset/Content Flavor": "SD"
           }
         ];
+        dataResponse2 = {
+          "name": "Charts",
+          "gridster": {
+            "blocks": [
+              {
+                "type": "lineChart",
+                "dimension": "",
+                "sum": ""
+              }, {
+                "type": "composeChart",
+                "dimension": "",
+                "sum": "",
+                "stack": ["", ""]
+              }, {
+                "type": "pieChart",
+                "dimension": "",
+                "sum": ""
+              }, {
+                "type": "pieChart",
+                "dimension": "",
+                "sum": ""
+              }, {
+                "type": "pieChart",
+                "dimension": "",
+                "sum": ""
+              }
+            ]
+          }
+        };
         $scope.sourceData = dataResponse;
+        $scope.screen = dataResponse2;
         MainController = $controller('MainController', {
           '$scope': $scope,
           'Debug': Debug
@@ -141,10 +172,21 @@
     it("Debug should be loaded", function() {
       return expect(Debug).not.toBeNull;
     });
+    it("DataAPI should be loaded", function() {
+      return expect(dataAPI).not.toBeNull;
+    });
     it("should call retrieveData", function() {
       spyOn($scope, 'retrieveData').andCallThrough();
       $scope.retrieveData();
       return expect($scope.retrieveData).toHaveBeenCalled();
+    });
+    it("should call getScreenParams", function() {
+      spyOn($scope, 'getScreenParams').andCallThrough();
+      $scope.getScreenParams();
+      return expect($scope.getScreenParams).toHaveBeenCalled();
+    });
+    it("should see check response screen data", function() {
+      return expect($scope.screen).not.toBeNull;
     });
     it("should see check response data", function() {
       return expect($scope.sourceData).not.toBeNull;

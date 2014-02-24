@@ -1,4 +1,47 @@
 <div class="row">
+	<div class="col-xs-16 col-md-12">
+		<h1>Angular Dc Prototype <small ng-bind="screen.name"></small></h1>
+		<hr/>
+	</div>
+	<div class="col-xs-16 col-md-12">
+		<form role="form">
+			<div class="form-group col-xs-4">
+				<label for="type">Type</label>
+				<select id="type" name="type" ng-options="item as item for item in filterSearch" ng-model="include.type" class="form-control"></select>
+			</div>
+			<div class="form-group col-xs-4">
+				<label for="text">Value</label>
+				<input class="form-control" id="text" ng-model="include.text" placeholder="Ex: HD">
+			</div>
+		</form>
+	</div>
+	<div class="col-xs-16 col-md-12">
+		<div gridster="screen.gridster.options" class="charts">
+			<ul>
+				<li
+					gridster-item
+					row="item.gridster.row"
+					col="item.gridster.col"
+					size-x="item.gridster.sizeX"
+					size-y="item.gridster.sizeY" ng-repeat="item in screen.gridster.blocks">
+
+
+					<h4 ng-bind="item.id | uppercase"></h4>
+					<span ng-switch on="item.type">
+						<div ng-switch-when="dc-pie" id="{{ item.id }}" dc-pie="item" dimensions="Dimensions" measures="Measures" width="200" height="200" ></div>
+		        <div ng-switch-when="dc-line" id="{{ item.id }}" dc-line="item" height="250" style="display:block;width: 100%;" ></div>
+						<div ng-switch-when="dc-compose" id="{{ item.id }}" dc-compose="item"  height="250" style="display:block;width: 100%;"></div>
+			    </span>
+					<!--<div id="dcPie{{ $index }}" dc-pie="pieChartOpts" dimensions="Dimension" measures="Measure" width="200" height="200" style="height:200px;display:block;width: 100%;"></div>-->
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<!--
+<div class="row">
 	<div class="col-xs-12 col-md-8">
 		<h2>Angular Dc Prototype</h2>
 		
@@ -61,3 +104,4 @@
 		</div>
 	</div>
 </div>
+-->

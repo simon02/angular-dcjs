@@ -6,15 +6,90 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
     $scope.filterSearch = []
     $scope.include = {}
 
-    $scope.gridsterOpts = {
-      margins: [20, 20]
-      draggable: {
-        enabled: true
-      }
-      resizable: {
-        enabled: false
-      }
-    }
+    $scope.setScreenData = ()->
+      if $scope.screen
+        angular.forEach($scope.screen.gridster.blocks, (v, k)->
+          v = $scope.createStructure(v)
+          console.log(v)
+
+        )
+        return
+
+    $scope.getScreenParams = ()->
+      dataAPI.getScreenParams().then((response)->
+        $scope.screen = response.data
+        $scope.setScreenData()
+      )
+      return
+
+    $scope.createStructure = (item)->
+      if(item.type=='dc-pie')
+        if(item.dimension isnt null and item.sum isnt null)
+          item.dimension = $scope.rows.dimension((d)->
+            return d[item.indexBy.dimension]
+          )
+          item.sum = item.dimension.group().reduceSum((d)->
+            return d[item.indexBy.sum]
+          )
+      if(item.type=='dc-line')
+        if(item.dimension isnt null and item.sum isnt null)
+          item.dimension = $scope.rows.dimension((d)->
+            return d[item.indexBy.dimension]
+          )
+          item.sum = item.dimension.group().reduceSum((d)->
+            return d[item.indexBy.sum]
+          )
+          item.min = item.dimension.bottom(1)[0][item.indexBy.dimension]
+          item.max = item.dimension.top(1)[0][item.indexBy.dimension]
+
+      if(item.type=='dc-compose')
+        if(item.dimension isnt null and item.sum isnt null)
+          item.dimension = $scope.rows.dimension((d)->
+            return d[item.indexBy.dimension]
+          )
+          item.sum = {
+            title: item.stack,
+            object: item.dimension.group().reduce((p, v)->
+                angular.forEach(item.stack, (value)->
+                  if(v[item.indexBy.dimension] == value)
+                    p[item.indexBy.dimension] += +v[item.indexBy.dimension]
+                )
+                return p
+              (p, v)->
+                angular.forEach(item.stack, (value)->
+                  if(v[item.indexBy.dimension] == value)
+                    p[item.indexBy.dimension] -= +v[item.indexBy.dimension]
+                )
+                return p
+              ()->
+                obj = {}
+                angular.forEach(item.stack,(value)->
+                  obj[value] = 0
+                )
+                return obj
+            )
+          }
+          item.min = item.dimension.bottom(1)[0][item.indexBy.dimension]
+          item.max = item.dimension.top(1)[0][item.indexBy.dimension]
+
+      return item
+
+
+    $scope.retrieveData = ()->
+      dataAPI.getData().then((response)->
+        if response.data
+          response.data.forEach((d)->
+            d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
+            return
+          )
+
+          $scope.sourceData = response.data
+          $scope.identifyHeaders($scope.sourceData)
+          $scope.getScreenParams()
+          $scope.render()
+        return
+      )
+      return
 
     $scope.customItems = [
       { sizeX: 2, sizeY: 2, row: 0, col: 0},
@@ -52,23 +127,6 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
         $scope.lineChartDim.top(Infinity)
       )
       $scope.setChartDim()
-
-    $scope.retrieveData = ()->
-      dataAPI.getData().then((response)->
-        if response.data
-          response.data.forEach((d)->
-            d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
-            return
-          )
-
-          $scope.sourceData = response.data
-          $scope.identifyHeaders($scope.sourceData)
-          $scope.render()
-        return
-      )
-      return
-
-
 
     $scope.identifyHeaders = (data) =>
       $scope.getParams(data, 'Datetime')
@@ -141,8 +199,6 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
             'items': items
           })
 
-    $scope.retrieveData()
-
     $scope.setFilterSearch = (items, index)->
       items.forEach((item)->
         $scope.filterSearch.push(index + ':' + item)
@@ -193,6 +249,8 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
         $scope.filter[include.type] = if include.text then include.text else ""
         $scope.render()
     , true)
+
+    $scope.retrieveData()
 
     return
 

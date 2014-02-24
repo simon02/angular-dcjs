@@ -30,7 +30,41 @@ describe "Controller:MainController", ()->
         {"DATETIME:date":"9/23/13","MEASURE:Units":1,"MEASURE:Royalty Price":2.09,"MEASURE:Customer Price":2.99,"DIMENSION:Vendor Identifier":"0211_20132108","DIMENSION:Title":"AlÃŒÂ©m","DIMENSION:Label/Studio/Network":"Wakin","DIMENSION:Product Type Identifier":"D","DIMENSION:Order Id":"4.34E+09","DIMENSION:Postal Code":"18509-2108","DIMENSION:Customer Identifier":4368359068,"DIMENSION:Sale/Return":"S","DIMENSION:Customer Currency":"USD","DIMENSION:Country Code":"BR","DIMENSION:Royalty Currency":"USD","DIMENSION:Asset/Content Flavor":"HD"},
         {"DATETIME:date":"9/28/13","MEASURE:Units":1,"MEASURE:Royalty Price":1.39,"MEASURE:Customer Price":1.99,"DIMENSION:Vendor Identifier":"0145_20121109","DIMENSION:Title":"Habem","DIMENSION:Label/Studio/Network":"Sache","DIMENSION:Product Type Identifier":"D","DIMENSION:Order Id":"3.77E+09","DIMENSION:Postal Code":"16346-1910","DIMENSION:Customer Identifier":4481458708,"DIMENSION:Sale/Return":"S","DIMENSION:Customer Currency":"USD","DIMENSION:Country Code":"BR","DIMENSION:Royalty Currency":"USD","DIMENSION:Asset/Content Flavor":"SD"}
       ]
+      dataResponse2 = {
+        "name": "Charts",
+        "gridster": {
+          "blocks": [
+            {
+              "type":"lineChart",
+              "dimension": "",
+              "sum": ""
+            },
+            {
+              "type":"composeChart",
+              "dimension": "",
+              "sum": "",
+              "stack": ["",""]
+            },
+            {
+              "type":"pieChart",
+              "dimension": "",
+              "sum": ""
+            },
+            {
+              "type":"pieChart",
+              "dimension": "",
+              "sum": ""
+            },
+            {
+              "type":"pieChart",
+              "dimension": "",
+              "sum": ""
+            }
+          ]
+        }
+      }
       $scope.sourceData = dataResponse
+      $scope.screen = dataResponse2
 
       MainController = $controller('MainController', {'$scope':$scope, 'Debug': Debug})
       return
@@ -46,10 +80,21 @@ describe "Controller:MainController", ()->
   it "Debug should be loaded", ()->
     expect(Debug).not.toBeNull
 
+  it "DataAPI should be loaded", ()->
+    expect(dataAPI).not.toBeNull
+
   it "should call retrieveData", ()->
     spyOn($scope,'retrieveData').andCallThrough()
     $scope.retrieveData()
     expect($scope.retrieveData).toHaveBeenCalled()
+
+  it "should call getScreenParams", ()->
+    spyOn($scope,'getScreenParams').andCallThrough()
+    $scope.getScreenParams()
+    expect($scope.getScreenParams).toHaveBeenCalled()
+
+  it "should see check response screen data",()->
+    expect($scope.screen).not.toBeNull
 
   it "should see check response data",()->
     expect($scope.sourceData).not.toBeNull

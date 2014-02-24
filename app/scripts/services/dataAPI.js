@@ -5,6 +5,9 @@
     this.getData = function() {
       return $http.get('sampledata2.json');
     };
+    this.getScreenParams = function() {
+      return $http.get('screen.json');
+    };
   });
 
 }).call(this);

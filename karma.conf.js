@@ -12,6 +12,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/bower_components/angular/angular.js',
+      'app/bower_components/jquery/jquery.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-gridster/dist/scripts/*.js',
@@ -21,6 +22,9 @@ module.exports = function(config) {
       'app/bower_components/dc.js/dc.js',
 	    'app/bower_components/select2/select2.js',
 	    'app/bower_components/angular-ui-select2/src/select2.js',
+	    'app/bower_components/pivottable/pivot.js',
+	    'app/bower_components/pivottable/d3_renderers.js',
+	    'app/bower_components/pivottable/gchart_renderers.js',
       'node_modules/requirejs/require.js',
       'app/sampledata.json',
       'app/sampledata.js',

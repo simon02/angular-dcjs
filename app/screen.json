@@ -1,16 +1,103 @@
-[
-	{
-		"name": "Charts",
-		"gridster": {
-			"charts": [
-				{
-					"type":"pieChart",
-					"data": [
-						{},
-						{}
-					]
-				}
-			]
-		}
+{
+	"name": "Charts",
+	"gridster": {
+		"options": {
+			"minRows": 2,
+			"maxRows": 5,
+			"columns": 3,
+			"colWidth": "auto",
+			"rowHeight": "match",
+			"margins": [20, 20],
+			"draggable": {
+				"enabled": true
+			},
+			"resizable": {
+				"enabled": false
+			}
+		},
+		"blocks": [
+			{
+				"gridster" : {
+					"sizeX": 2,
+					"sizeY": 1,
+					"row": 0,
+					"col": 0
+				},
+				"indexBy":{
+					"dimension": "DATETIME:date",
+					"sum": "MEASURE:Customer Price"
+				},
+				"id": "grid1",
+				"type":"dc-line",
+				"brush": false,
+				"dimension": {},
+				"sum": {}
+			},
+			{
+				"gridster" : {
+					"sizeX": 2,
+					"sizeY": 1,
+					"row": 0,
+					"col": 0
+				},
+				"id": "grid2",
+				"type":"dc-compose",
+				"indexBy":{
+					"dimension": "DATETIME:date",
+					"sum": "MEASURE:Customer Price"
+				},
+				"stack": ["",""],
+				"dimension": {},
+				"sum": {}
+			},
+			{
+				"gridster" : {
+					"sizeX": 1,
+					"sizeY": 1,
+					"row": 1,
+					"col": 0
+				},
+				"id": "grid3",
+				"type":"dc-pie",
+				"indexBy":{
+					"dimension": "DATETIME:date",
+					"sum": "MEASURE:Customer Price"
+				},
+				"dimension": {},
+				"sum": {}
+			},
+			{
+				"gridster" : {
+					"sizeX": 1,
+					"sizeY": 1,
+					"row": 1,
+					"col": 1
+				},
+				"id": "grid4",
+				"type":"dc-pie",
+				"indexBy":{
+					"dimension": "DIMENSION:Title",
+					"sum": "MEASURE:Units"
+				},
+				"dimension": {},
+				"sum": {}
+			},
+			{
+				"gridster" : {
+					"sizeX": 1,
+					"sizeY": 1,
+					"row": 1,
+					"col": 2
+				},
+				"id": "grid5",
+				"type":"dc-pie",
+				"indexBy":{
+					"dimension": "DIMENSION:Asset/Content Flavor",
+					"sum": "MEASURE:Customer Price"
+				},
+				"dimension": {},
+				"sum": {}
+			}
+		]
 	}
-]
+}

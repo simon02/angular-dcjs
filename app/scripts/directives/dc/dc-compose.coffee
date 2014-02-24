@@ -5,6 +5,7 @@ if not dc or not d3 or not crossfilter or not _
 angular.module('dcCompose',[]).
 
 directive "dcCompose", ()->
+  restrict: 'AC'
   scope:
     dcCompose: '='
     dimensions: '='

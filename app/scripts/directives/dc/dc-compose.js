@@ -7,6 +7,7 @@
 
   angular.module('dcCompose', []).directive("dcCompose", function() {
     return {
+      restrict: 'AC',
       scope: {
         dcCompose: '=',
         dimensions: '=',

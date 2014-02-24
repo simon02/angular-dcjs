@@ -6,14 +6,91 @@
     '$scope', '$filter', '$log', 'Debug', 'dataAPI', function($scope, $filter, $log, Debug, dataAPI) {
       $scope.filterSearch = [];
       $scope.include = {};
-      $scope.gridsterOpts = {
-        margins: [20, 20],
-        draggable: {
-          enabled: true
-        },
-        resizable: {
-          enabled: false
+      $scope.setScreenData = function() {
+        if ($scope.screen) {
+          angular.forEach($scope.screen.gridster.blocks, function(v, k) {
+            v = $scope.createStructure(v);
+            return console.log(v);
+          });
         }
+      };
+      $scope.getScreenParams = function() {
+        dataAPI.getScreenParams().then(function(response) {
+          $scope.screen = response.data;
+          return $scope.setScreenData();
+        });
+      };
+      $scope.createStructure = function(item) {
+        if (item.type === 'dc-pie') {
+          if (item.dimension !== null && item.sum !== null) {
+            item.dimension = $scope.rows.dimension(function(d) {
+              return d[item.indexBy.dimension];
+            });
+            item.sum = item.dimension.group().reduceSum(function(d) {
+              return d[item.indexBy.sum];
+            });
+          }
+        }
+        if (item.type === 'dc-line') {
+          if (item.dimension !== null && item.sum !== null) {
+            item.dimension = $scope.rows.dimension(function(d) {
+              return d[item.indexBy.dimension];
+            });
+            item.sum = item.dimension.group().reduceSum(function(d) {
+              return d[item.indexBy.sum];
+            });
+            item.min = item.dimension.bottom(1)[0][item.indexBy.dimension];
+            item.max = item.dimension.top(1)[0][item.indexBy.dimension];
+          }
+        }
+        if (item.type === 'dc-compose') {
+          if (item.dimension !== null && item.sum !== null) {
+            item.dimension = $scope.rows.dimension(function(d) {
+              return d[item.indexBy.dimension];
+            });
+            item.sum = {
+              title: item.stack,
+              object: item.dimension.group().reduce(function(p, v) {
+                angular.forEach(item.stack, function(value) {
+                  if (v[item.indexBy.dimension] === value) {
+                    return p[item.indexBy.dimension] += +v[item.indexBy.dimension];
+                  }
+                });
+                return p;
+              }, function(p, v) {
+                angular.forEach(item.stack, function(value) {
+                  if (v[item.indexBy.dimension] === value) {
+                    return p[item.indexBy.dimension] -= +v[item.indexBy.dimension];
+                  }
+                });
+                return p;
+              }, function() {
+                var obj;
+                obj = {};
+                angular.forEach(item.stack, function(value) {
+                  return obj[value] = 0;
+                });
+                return obj;
+              })
+            };
+            item.min = item.dimension.bottom(1)[0][item.indexBy.dimension];
+            item.max = item.dimension.top(1)[0][item.indexBy.dimension];
+          }
+        }
+        return item;
+      };
+      $scope.retrieveData = function() {
+        dataAPI.getData().then(function(response) {
+          if (response.data) {
+            response.data.forEach(function(d) {
+              d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
+            });
+            $scope.sourceData = response.data;
+            $scope.identifyHeaders($scope.sourceData);
+            $scope.getScreenParams();
+            $scope.render();
+          }
+        });
       };
       $scope.customItems = [
         {
@@ -61,18 +138,6 @@
         });
         jQuery("#pivottable").pivotUI($scope.lineChartDim.top(Infinity));
         return $scope.setChartDim();
-      };
-      $scope.retrieveData = function() {
-        dataAPI.getData().then(function(response) {
-          if (response.data) {
-            response.data.forEach(function(d) {
-              d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
-            });
-            $scope.sourceData = response.data;
-            $scope.identifyHeaders($scope.sourceData);
-            $scope.render();
-          }
-        });
       };
       $scope.identifyHeaders = function(data) {
         $scope.getParams(data, 'Datetime');
@@ -150,7 +215,6 @@
           }
         }
       };
-      $scope.retrieveData();
       $scope.setFilterSearch = function(items, index) {
         return items.forEach(function(item) {
           return $scope.filterSearch.push(index + ':' + item);
@@ -199,6 +263,7 @@
           return $scope.render();
         }
       }, true);
+      $scope.retrieveData();
     }
   ]);
 

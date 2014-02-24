@@ -5,6 +5,7 @@ if not dc or not d3 or not crossfilter or not _
 angular.module('dcLine',[]).
 
 directive "dcLine", ()->
+  restrict: 'AC'
   scope:
     dcLine: '='
     dimensions: '='
@@ -52,9 +53,10 @@ directive "dcLine", ()->
         dimension($scope.dcLine.dimension).
         group($scope.dcLine.sum).
         x(d3.time.scale().domain([$scope.dcLine.min,$scope.dcLine.max])).
-        yAxisLabel("Customer Price").
-        xAxisLabel("Date").
+        yAxisLabel($scope.dcLine.indexBy.sum).
+        xAxisLabel($scope.dcLine.indexBy.dimension).
         renderArea(true).
+        brushOn($scope.dcLine.brush).
         renderHorizontalGridLines(true).
         elasticY(true)
       $scope.dcLineChart.render()
