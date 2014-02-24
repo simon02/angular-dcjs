@@ -36,13 +36,13 @@ directive "dcLine", ()->
         return
     )
 
-    $scope.$watch('filter',(filter)->
-      if $scope.dcLineChart
-        $scope.dcLineChart.filterAll()
-        if filter
-          $scope.dcLineChart.filter(filter)
-        $scope.dcLineChart.redraw()
-    )
+    $scope.dcLine.update = ()->
+
+      $scope.dcLineChart.
+      dimension($scope.dcLine.dimension).
+      group($scope.dcLine.sum).
+      redraw()
+      return
 
     $scope.create = ()=>
       $scope.dcLineChart = dc.lineChart('#' + $scope.chartId)
@@ -58,7 +58,8 @@ directive "dcLine", ()->
         renderArea(true).
         brushOn($scope.dcLine.brush).
         renderHorizontalGridLines(true).
-        elasticY(true)
+        elasticY(true).
+        elasticX(true)
       $scope.dcLineChart.render()
       return
     return

@@ -24,13 +24,11 @@
 					col="item.gridster.col"
 					size-x="item.gridster.sizeX"
 					size-y="item.gridster.sizeY" ng-repeat="item in screen.gridster.blocks">
-
-
 					<h4 ng-bind="item.id | uppercase"></h4>
 					<span ng-switch on="item.type">
-						<div ng-switch-when="dc-pie" id="{{ item.id }}" dc-pie="item" dimensions="Dimensions" measures="Measures" width="200" height="200" ></div>
+						<!--<div ng-switch-when="dc-pie" id="{{ item.id }}" dc-pie="item" dimensions="Dimensions" measures="Measures" width="200" height="200" ></div>-->
 		        <div ng-switch-when="dc-line" id="{{ item.id }}" dc-line="item" height="250" style="display:block;width: 100%;" ></div>
-						<div ng-switch-when="dc-compose" id="{{ item.id }}" dc-compose="item"  height="250" style="display:block;width: 100%;"></div>
+						<!--<div ng-switch-when="dc-compose" id="{{ item.id }}" dc-compose="item"  height="250" style="display:block;width: 100%;"></div>-->
 			    </span>
 					<!--<div id="dcPie{{ $index }}" dc-pie="pieChartOpts" dimensions="Dimension" measures="Measure" width="200" height="200" style="height:200px;display:block;width: 100%;"></div>-->
 				</li>

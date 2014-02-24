@@ -5,7 +5,7 @@
     throw 'You need to load DC, D3, Crossfilter and Underscore library';
   }
 
-  angular.module('dcPie', []).directive("dcPie", function() {
+  angular.module('dcPie', []).directive("dcPie", function($rootScope) {
     return {
       restrict: 'AC',
       scope: {
@@ -40,13 +40,16 @@
         });
         $scope.$watch('dcPie', function(dcPie) {
           if (dcPie) {
-            $scope.create();
+            return $scope.create();
           }
         });
         $scope.setHeight = function(height) {
           if ($scope.dcPieChart && height) {
             return $scope.dcPieChart.height(height);
           }
+        };
+        $scope.dcPie.update = function() {
+          return $scope.dcPieChart.dimension($scope.dcPie.dimension).group($scope.dcPie.sum).redraw();
         };
         $scope.setMetrics = function() {
           if ($scope.dimFilter && $scope.measureFilter) {
@@ -62,7 +65,8 @@
         };
         $scope.create = function() {
           $scope.dcPieChart = dc.pieChart('#' + $scope.chartId);
-          $scope.dcPieChart.width(attrs.width).height(attrs.height).dimension($scope.dcPie.dimension).group($scope.dcPie.sum).render();
+          $scope.dcPieChart.width(attrs.width).height(attrs.height).dimension($scope.dcPie.dimension).group($scope.dcPie.sum);
+          $scope.dcPieChart.render();
         };
       }
     };

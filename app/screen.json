@@ -18,7 +18,7 @@
 		"blocks": [
 			{
 				"gridster" : {
-					"sizeX": 2,
+					"sizeX": 3,
 					"sizeY": 1,
 					"row": 0,
 					"col": 0
@@ -37,16 +37,16 @@
 				"gridster" : {
 					"sizeX": 2,
 					"sizeY": 1,
-					"row": 0,
+					"row": 1,
 					"col": 0
 				},
 				"id": "grid2",
 				"type":"dc-compose",
 				"indexBy":{
 					"dimension": "DATETIME:date",
-					"sum": "MEASURE:Customer Price"
+					"sum": "DIMENSION:Asset/Content Flavor"
 				},
-				"stack": ["",""],
+				"stack": ["HD","SD"],
 				"dimension": {},
 				"sum": {}
 			},
@@ -55,13 +55,13 @@
 					"sizeX": 1,
 					"sizeY": 1,
 					"row": 1,
-					"col": 0
+					"col": 2
 				},
 				"id": "grid3",
 				"type":"dc-pie",
 				"indexBy":{
-					"dimension": "DATETIME:date",
-					"sum": "MEASURE:Customer Price"
+					"dimension": "DIMENSION:Country Code",
+					"sum": "MEASURE:Units"
 				},
 				"dimension": {},
 				"sum": {}
@@ -70,8 +70,8 @@
 				"gridster" : {
 					"sizeX": 1,
 					"sizeY": 1,
-					"row": 1,
-					"col": 1
+					"row": 2,
+					"col": 0
 				},
 				"id": "grid4",
 				"type":"dc-pie",
@@ -86,8 +86,8 @@
 				"gridster" : {
 					"sizeX": 1,
 					"sizeY": 1,
-					"row": 1,
-					"col": 2
+					"row": 2,
+					"col": 1
 				},
 				"id": "grid5",
 				"type":"dc-pie",

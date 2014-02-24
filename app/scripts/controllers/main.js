@@ -3,14 +3,13 @@
   var _this = this;
 
   angular.module('angularDcjsApp').controller('MainController', [
-    '$scope', '$filter', '$log', 'Debug', 'dataAPI', function($scope, $filter, $log, Debug, dataAPI) {
+    '$rootScope', '$scope', '$filter', '$log', 'Debug', 'dataAPI', function($rootScope, $scope, $filter, $log, Debug, dataAPI) {
       $scope.filterSearch = [];
       $scope.include = {};
       $scope.setScreenData = function() {
         if ($scope.screen) {
-          angular.forEach($scope.screen.gridster.blocks, function(v, k) {
+          angular.forEach($scope.screen.gridster.blocks, function(v) {
             v = $scope.createStructure(v);
-            return console.log(v);
           });
         }
       };
@@ -22,7 +21,7 @@
       };
       $scope.createStructure = function(item) {
         if (item.type === 'dc-pie') {
-          if (item.dimension !== null && item.sum !== null) {
+          if (item.indexBy.dimension !== null && item.indexBy.sum !== null) {
             item.dimension = $scope.rows.dimension(function(d) {
               return d[item.indexBy.dimension];
             });
@@ -32,7 +31,7 @@
           }
         }
         if (item.type === 'dc-line') {
-          if (item.dimension !== null && item.sum !== null) {
+          if (item.indexBy.dimension !== null && item.indexBy.sum !== null) {
             item.dimension = $scope.rows.dimension(function(d) {
               return d[item.indexBy.dimension];
             });
@@ -44,7 +43,7 @@
           }
         }
         if (item.type === 'dc-compose') {
-          if (item.dimension !== null && item.sum !== null) {
+          if (item.indexBy.dimension !== null && item.indexBy.sum !== null) {
             item.dimension = $scope.rows.dimension(function(d) {
               return d[item.indexBy.dimension];
             });
@@ -77,6 +76,9 @@
             item.max = item.dimension.top(1)[0][item.indexBy.dimension];
           }
         }
+        if (item.update) {
+          item.update();
+        }
         return item;
       };
       $scope.retrieveData = function() {
@@ -86,30 +88,24 @@
               d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date']);
             });
             $scope.sourceData = response.data;
-            $scope.identifyHeaders($scope.sourceData);
             $scope.getScreenParams();
+            $scope.identifyHeaders($scope.sourceData);
             $scope.render();
           }
         });
       };
-      $scope.customItems = [
-        {
-          sizeX: 2,
-          sizeY: 2,
-          row: 0,
-          col: 0
-        }, {
-          sizeX: 2,
-          sizeY: 2,
-          row: 0,
-          col: 2
-        }, {
-          sizeX: 2,
-          sizeY: 2,
-          row: 0,
-          col: 4
+      $scope.setFilters = function() {
+        var filter;
+        $scope.rows = crossfilter($scope.sourceData);
+        if ($scope.filter) {
+          filter = $filter('filter')($scope.sourceData, $scope.filter);
+          if (filter.length > 0) {
+            return $scope.rows = crossfilter(filter);
+          } else {
+            return $log.warn("No content Found");
+          }
         }
-      ];
+      };
       $scope.getLog = function() {
         return Debug.output();
       };
@@ -117,27 +113,8 @@
         return rows.length > 0;
       };
       $scope.render = function() {
-        if ($scope.filter) {
-          if ($scope.checkFilter($filter('filter')($scope.sourceData, $scope.filter))) {
-            $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.filter));
-          } else {
-            $log.warn("No content Found");
-            return false;
-          }
-        } else {
-          $scope.rows = crossfilter($scope.sourceData);
-        }
-        $scope.lineChartDim = $scope.rows.dimension(function(d) {
-          return d['DATETIME:date'];
-        });
-        $scope.composeChartDim = $scope.rows.dimension(function(d) {
-          return d['DATETIME:date'];
-        });
-        $scope.pieChartDim = $scope.rows.dimension(function(d) {
-          return d['DIMENSION:Asset/Content Flavor'];
-        });
-        jQuery("#pivottable").pivotUI($scope.lineChartDim.top(Infinity));
-        return $scope.setChartDim();
+        $scope.setFilters();
+        $scope.setScreenData();
       };
       $scope.identifyHeaders = function(data) {
         $scope.getParams(data, 'Datetime');

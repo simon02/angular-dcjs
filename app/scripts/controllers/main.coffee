@@ -1,17 +1,16 @@
 angular.module('angularDcjsApp').
 
-controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
-  ($scope, $filter, $log, Debug, dataAPI)=>
+controller('MainController', ['$rootScope','$scope','$filter','$log','Debug','dataAPI',
+  ($rootScope, $scope, $filter, $log, Debug, dataAPI)=>
 
     $scope.filterSearch = []
     $scope.include = {}
 
     $scope.setScreenData = ()->
       if $scope.screen
-        angular.forEach($scope.screen.gridster.blocks, (v, k)->
+        angular.forEach($scope.screen.gridster.blocks, (v)->
           v = $scope.createStructure(v)
-          console.log(v)
-
+          return
         )
         return
 
@@ -24,7 +23,7 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
 
     $scope.createStructure = (item)->
       if(item.type=='dc-pie')
-        if(item.dimension isnt null and item.sum isnt null)
+        if(item.indexBy.dimension isnt null and item.indexBy.sum isnt null)
           item.dimension = $scope.rows.dimension((d)->
             return d[item.indexBy.dimension]
           )
@@ -32,18 +31,20 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
             return d[item.indexBy.sum]
           )
       if(item.type=='dc-line')
-        if(item.dimension isnt null and item.sum isnt null)
+        if(item.indexBy.dimension isnt null and item.indexBy.sum isnt null)
           item.dimension = $scope.rows.dimension((d)->
             return d[item.indexBy.dimension]
           )
+
           item.sum = item.dimension.group().reduceSum((d)->
             return d[item.indexBy.sum]
           )
+
           item.min = item.dimension.bottom(1)[0][item.indexBy.dimension]
           item.max = item.dimension.top(1)[0][item.indexBy.dimension]
 
       if(item.type=='dc-compose')
-        if(item.dimension isnt null and item.sum isnt null)
+        if(item.indexBy.dimension isnt null and item.indexBy.sum isnt null)
           item.dimension = $scope.rows.dimension((d)->
             return d[item.indexBy.dimension]
           )
@@ -72,6 +73,8 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
           item.min = item.dimension.bottom(1)[0][item.indexBy.dimension]
           item.max = item.dimension.top(1)[0][item.indexBy.dimension]
 
+      if(item.update)
+        item.update()
       return item
 
 
@@ -84,18 +87,21 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
           )
 
           $scope.sourceData = response.data
-          $scope.identifyHeaders($scope.sourceData)
           $scope.getScreenParams()
+          $scope.identifyHeaders($scope.sourceData)
           $scope.render()
         return
       )
       return
 
-    $scope.customItems = [
-      { sizeX: 2, sizeY: 2, row: 0, col: 0},
-      { sizeX: 2, sizeY: 2, row: 0, col: 2},
-      { sizeX: 2, sizeY: 2, row: 0, col: 4}
-    ]
+    $scope.setFilters = ()->
+      $scope.rows = crossfilter($scope.sourceData)
+      if($scope.filter)
+        filter = $filter('filter')($scope.sourceData, $scope.filter);
+        if(filter.length > 0)
+          $scope.rows = crossfilter(filter)
+        else
+          $log.warn("No content Found")
 
     $scope.getLog = ()->
       return Debug.output()
@@ -104,29 +110,13 @@ controller('MainController', ['$scope','$filter','$log','Debug','dataAPI',
       return rows.length > 0
 
     $scope.render = ()->
-      if($scope.filter)
-        if($scope.checkFilter($filter('filter')($scope.sourceData, $scope.filter)))
-          $scope.rows = crossfilter($filter('filter')($scope.sourceData, $scope.filter))
-        else
-          $log.warn("No content Found")
-          return false
-      else
-        $scope.rows = crossfilter($scope.sourceData)
-
-      $scope.lineChartDim = $scope.rows.dimension((d)->
-        return d['DATETIME:date']
-      )
-      $scope.composeChartDim = $scope.rows.dimension((d)->
-        return d['DATETIME:date']
-      )
-      $scope.pieChartDim = $scope.rows.dimension((d)->
-        return d['DIMENSION:Asset/Content Flavor']
-      )
-
-      jQuery("#pivottable").pivotUI(
-        $scope.lineChartDim.top(Infinity)
-      )
-      $scope.setChartDim()
+      $scope.setFilters()
+      $scope.setScreenData()
+      return
+#      jQuery("#pivottable").pivotUI(
+#        $scope.lineChartDim.top(Infinity)
+#      )
+#      $scope.setChartDim()
 
     $scope.identifyHeaders = (data) =>
       $scope.getParams(data, 'Datetime')

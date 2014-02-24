@@ -131,28 +131,98 @@
         dataResponse2 = {
           "name": "Charts",
           "gridster": {
+            "options": {
+              "minRows": 2,
+              "maxRows": 5,
+              "columns": 3,
+              "colWidth": "auto",
+              "rowHeight": "match",
+              "margins": [20, 20],
+              "draggable": {
+                "enabled": true
+              },
+              "resizable": {
+                "enabled": false
+              }
+            },
             "blocks": [
               {
-                "type": "lineChart",
-                "dimension": "",
-                "sum": ""
+                "gridster": {
+                  "sizeX": 2,
+                  "sizeY": 1,
+                  "row": 0,
+                  "col": 0
+                },
+                "indexBy": {
+                  "dimension": "DATETIME:date",
+                  "sum": "MEASURE:Customer Price"
+                },
+                "id": "grid1",
+                "type": "dc-line",
+                "brush": false,
+                "dimension": {},
+                "sum": {}
               }, {
-                "type": "composeChart",
-                "dimension": "",
-                "sum": "",
-                "stack": ["", ""]
+                "gridster": {
+                  "sizeX": 2,
+                  "sizeY": 1,
+                  "row": 0,
+                  "col": 0
+                },
+                "id": "grid2",
+                "type": "dc-compose",
+                "indexBy": {
+                  "dimension": "DATETIME:date",
+                  "sum": "DIMENSION:Asset/Content Flavor"
+                },
+                "stack": ["HD", "SD"],
+                "dimension": {},
+                "sum": {}
               }, {
-                "type": "pieChart",
-                "dimension": "",
-                "sum": ""
+                "gridster": {
+                  "sizeX": 1,
+                  "sizeY": 1,
+                  "row": 1,
+                  "col": 0
+                },
+                "id": "grid3",
+                "type": "dc-pie",
+                "indexBy": {
+                  "dimension": "DIMENSION:Country Code",
+                  "sum": "MEASURE:Units"
+                },
+                "dimension": {},
+                "sum": {}
               }, {
-                "type": "pieChart",
-                "dimension": "",
-                "sum": ""
+                "gridster": {
+                  "sizeX": 1,
+                  "sizeY": 1,
+                  "row": 1,
+                  "col": 1
+                },
+                "id": "grid4",
+                "type": "dc-pie",
+                "indexBy": {
+                  "dimension": "DIMENSION:Title",
+                  "sum": "MEASURE:Units"
+                },
+                "dimension": {},
+                "sum": {}
               }, {
-                "type": "pieChart",
-                "dimension": "",
-                "sum": ""
+                "gridster": {
+                  "sizeX": 1,
+                  "sizeY": 1,
+                  "row": 1,
+                  "col": 2
+                },
+                "id": "grid5",
+                "type": "dc-pie",
+                "indexBy": {
+                  "dimension": "DIMENSION:Asset/Content Flavor",
+                  "sum": "MEASURE:Customer Price"
+                },
+                "dimension": {},
+                "sum": {}
               }
             ]
           }
@@ -160,6 +230,7 @@
         $scope.sourceData = dataResponse;
         $scope.screen = dataResponse2;
         MainController = $controller('MainController', {
+          '$rootScope': $rootScope,
           '$scope': $scope,
           'Debug': Debug
         });
@@ -187,6 +258,18 @@
     });
     it("should see check response screen data", function() {
       return expect($scope.screen).not.toBeNull;
+    });
+    it("should call setScreenData", function() {
+      spyOn($scope, 'setScreenData').andCallThrough();
+      $scope.rows = crossfilter(dataResponse);
+      $scope.setScreenData();
+      return expect($scope.setScreenData).toHaveBeenCalled();
+    });
+    it("should call createStructure", function() {
+      spyOn($scope, 'createStructure').andCallThrough();
+      $scope.rows = crossfilter(dataResponse);
+      $scope.createStructure($scope.screen.gridster.blocks[1]);
+      return expect($scope.createStructure).toHaveBeenCalled();
     });
     it("should see check response data", function() {
       return expect($scope.sourceData).not.toBeNull;

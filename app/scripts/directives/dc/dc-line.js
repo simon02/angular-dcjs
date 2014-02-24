@@ -36,15 +36,9 @@
             $scope.create();
           }
         });
-        $scope.$watch('filter', function(filter) {
-          if ($scope.dcLineChart) {
-            $scope.dcLineChart.filterAll();
-            if (filter) {
-              $scope.dcLineChart.filter(filter);
-            }
-            return $scope.dcLineChart.redraw();
-          }
-        });
+        $scope.dcLine.update = function() {
+          $scope.dcLineChart.dimension($scope.dcLine.dimension).group($scope.dcLine.sum).redraw();
+        };
         $scope.create = function() {
           $scope.dcLineChart = dc.lineChart('#' + $scope.chartId);
           $scope.dcLineChart.width(element.width()).height($scope.height).margins({
@@ -52,7 +46,7 @@
             left: 50,
             right: 10,
             bottom: 50
-          }).dimension($scope.dcLine.dimension).group($scope.dcLine.sum).x(d3.time.scale().domain([$scope.dcLine.min, $scope.dcLine.max])).yAxisLabel($scope.dcLine.indexBy.sum).xAxisLabel($scope.dcLine.indexBy.dimension).renderArea(true).brushOn($scope.dcLine.brush).renderHorizontalGridLines(true).elasticY(true);
+          }).dimension($scope.dcLine.dimension).group($scope.dcLine.sum).x(d3.time.scale().domain([$scope.dcLine.min, $scope.dcLine.max])).yAxisLabel($scope.dcLine.indexBy.sum).xAxisLabel($scope.dcLine.indexBy.dimension).renderArea(true).brushOn($scope.dcLine.brush).renderHorizontalGridLines(true).elasticY(true).elasticX(true);
           $scope.dcLineChart.render();
         };
       }

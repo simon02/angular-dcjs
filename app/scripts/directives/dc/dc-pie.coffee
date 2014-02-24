@@ -4,7 +4,7 @@ if not dc or not d3 or not crossfilter or not _
 
 angular.module('dcPie',[]).
 
-directive "dcPie", ()->
+directive "dcPie", ($rootScope)->
   restrict: 'AC'
   scope:
     dcPie: '='
@@ -39,12 +39,18 @@ directive "dcPie", ()->
     $scope.$watch('dcPie', (dcPie)->
       if dcPie
         $scope.create()
-        return
     )
 
     $scope.setHeight = (height)->
       if $scope.dcPieChart and height
         $scope.dcPieChart.height(height)
+
+    $scope.dcPie.update = ()->
+      $scope.dcPieChart.
+      dimension($scope.dcPie.dimension).
+      group($scope.dcPie.sum).
+      redraw()
+
 
     $scope.setMetrics = ()->
       if $scope.dimFilter and $scope.measureFilter
@@ -66,7 +72,7 @@ directive "dcPie", ()->
         width(attrs.width).
         height(attrs.height).
         dimension($scope.dcPie.dimension).
-        group($scope.dcPie.sum).
-        render()
+        group($scope.dcPie.sum)
+      $scope.dcPieChart.render()
       return
     return
