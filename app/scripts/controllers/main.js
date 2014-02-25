@@ -51,15 +51,15 @@
               title: item.stack,
               object: item.dimension.group().reduce(function(p, v) {
                 angular.forEach(item.stack, function(value) {
-                  if (v[item.indexBy.dimension] === value) {
-                    return p[item.indexBy.dimension] += +v[item.indexBy.dimension];
+                  if (v[item.indexBy.sum] === value) {
+                    return p[value] += +v[item.indexBy.sum];
                   }
                 });
                 return p;
               }, function(p, v) {
                 angular.forEach(item.stack, function(value) {
-                  if (v[item.indexBy.dimension] === value) {
-                    return p[item.indexBy.dimension] -= +v[item.indexBy.dimension];
+                  if (v[item.indexBy.sum] === value) {
+                    return p[value] -= +v[item.indexBy.sum];
                   }
                 });
                 return p;
@@ -96,14 +96,12 @@
       };
       $scope.setFilters = function() {
         var filter;
-        $scope.rows = crossfilter($scope.sourceData);
-        if ($scope.filter) {
-          filter = $filter('filter')($scope.sourceData, $scope.filter);
-          if (filter.length > 0) {
-            return $scope.rows = crossfilter(filter);
-          } else {
-            return $log.warn("No content Found");
-          }
+        filter = $filter('filter')($scope.sourceData, $scope.filter);
+        if (filter.length > 0) {
+          return $scope.rows = crossfilter(filter);
+        } else {
+          $log.info("Result not found");
+          return $scope.rows = crossfilter($scope.sourceData);
         }
       };
       $scope.getLog = function() {

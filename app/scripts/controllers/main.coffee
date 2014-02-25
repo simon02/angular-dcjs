@@ -45,6 +45,7 @@ controller('MainController', ['$rootScope','$scope','$filter','$log','Debug','da
 
       if(item.type=='dc-compose')
         if(item.indexBy.dimension isnt null and item.indexBy.sum isnt null)
+
           item.dimension = $scope.rows.dimension((d)->
             return d[item.indexBy.dimension]
           )
@@ -52,14 +53,14 @@ controller('MainController', ['$rootScope','$scope','$filter','$log','Debug','da
             title: item.stack,
             object: item.dimension.group().reduce((p, v)->
                 angular.forEach(item.stack, (value)->
-                  if(v[item.indexBy.dimension] == value)
-                    p[item.indexBy.dimension] += +v[item.indexBy.dimension]
+                  if(v[item.indexBy.sum] == value)
+                    p[value] += +v[item.indexBy.sum]
                 )
                 return p
               (p, v)->
                 angular.forEach(item.stack, (value)->
-                  if(v[item.indexBy.dimension] == value)
-                    p[item.indexBy.dimension] -= +v[item.indexBy.dimension]
+                  if(v[item.indexBy.sum] == value)
+                    p[value] -= +v[item.indexBy.sum]
                 )
                 return p
               ()->
@@ -95,13 +96,12 @@ controller('MainController', ['$rootScope','$scope','$filter','$log','Debug','da
       return
 
     $scope.setFilters = ()->
-      $scope.rows = crossfilter($scope.sourceData)
-      if($scope.filter)
-        filter = $filter('filter')($scope.sourceData, $scope.filter);
-        if(filter.length > 0)
-          $scope.rows = crossfilter(filter)
-        else
-          $log.warn("No content Found")
+      filter = $filter('filter')($scope.sourceData, $scope.filter)
+      if filter.length > 0
+        $scope.rows = crossfilter(filter)
+      else
+        $log.info("Result not found")
+        $scope.rows = crossfilter($scope.sourceData)
 
     $scope.getLog = ()->
       return Debug.output()

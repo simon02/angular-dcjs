@@ -51,22 +51,24 @@ directive "dcCompose", ()->
       height($scope.height).
       margins({top: 40, right: 50, bottom: 30, left: 60}).
       dimension($scope.dcCompose.dimension).
-      group($scope.dcCompose.sum.object, $scope.dcCompose.sum.title[0]).
-      x(d3.time.scale().domain([$scope.dcCompose.min,$scope.dcCompose.max])).
+      group($scope.dcCompose.sum.object).
+      x(d3.time.scale().domain([$scope.dcCompose.min, $scope.dcCompose.max])).
       renderArea(true).
       renderHorizontalGridLines(true).
       elasticY(true).
       brushOn(true).
-      valueAccessor((d)->
-        return d.value[$scope.dcCompose.sum.title[0]]
-      ).
-      stack($scope.dcCompose.sum.object, $scope.dcCompose.sum.title[1], (d)->
-        return d.value[$scope.dcCompose.sum.title[1]]
-      ).
       legend(dc.legend().x(element.width() - 50).y(10)).
       title((d)->
         return d.key
       )
+      angular.forEach($scope.dcCompose.stack,(value)->
+        $scope.dcComposeChart.stack($scope.dcCompose.sum.object, value, (d)->
+          return d.value[value]
+        ).valueAccessor((d)->
+          return d.value[value]
+        )
+      )
+
       $scope.dcComposeChart.render()
       return
     return
