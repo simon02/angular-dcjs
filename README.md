@@ -66,5 +66,5 @@ Or if you want to start the server using the distribution package
 Use the command
 >grunt build
 
-A "dist" folder will be created in your root folter of the project
+A "dist" folder will be created in your root folder of the project
 
