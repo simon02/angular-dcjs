@@ -60,7 +60,7 @@
 				"id": "grid3",
 				"type":"dc-pie",
 				"indexBy":{
-					"dimension": "DIMENSION:Country Code",
+            "dimension": "DIMENSION:Country Code",
 					"sum": "MEASURE:Units"
 				},
 				"dimension": {},

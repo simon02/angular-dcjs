@@ -40,7 +40,7 @@ describe "Directive: Dc-Line", ()->
       sum: measure
     }
 
-    scope.setMetrics = ()->
+    scope.update = ()->
       return
 
     scope.create = ()->
@@ -104,8 +104,8 @@ describe "Directive: Dc-Line", ()->
 
     expect(scope.create).toHaveBeenCalled()
 
-  it "should call setMetrics method", ()->
-    spyOn(scope,'setMetrics').andCallThrough()
-    scope.setMetrics()
-    expect(scope.setMetrics).toHaveBeenCalled()
+  it "should call update method", ()->
+    spyOn(scope,'update').andCallThrough()
+    scope.update()
+    expect(scope.update).toHaveBeenCalled()
 

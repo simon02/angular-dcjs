@@ -16,7 +16,6 @@
       },
       templateUrl: 'dc/line/template.html',
       link: function($scope, element, attrs) {
-        var _this = this;
         attrs.$observe('id', function(id) {
           return $scope.chartId = id ? id : 'dcLineDefault';
         });
@@ -37,7 +36,7 @@
           }
         });
         $scope.dcLine.update = function() {
-          $scope.dcLineChart.dimension($scope.dcLine.dimension).group($scope.dcLine.sum).redraw();
+          return $scope.create();
         };
         $scope.create = function() {
           $scope.dcLineChart = dc.lineChart('#' + $scope.chartId);
@@ -46,8 +45,7 @@
             left: 50,
             right: 10,
             bottom: 50
-          }).dimension($scope.dcLine.dimension).group($scope.dcLine.sum).x(d3.time.scale().domain([$scope.dcLine.min, $scope.dcLine.max])).yAxisLabel($scope.dcLine.indexBy.sum).xAxisLabel($scope.dcLine.indexBy.dimension).renderArea(true).brushOn($scope.dcLine.brush).renderHorizontalGridLines(true).elasticY(true).elasticX(true);
-          $scope.dcLineChart.render();
+          }).dimension($scope.dcLine.dimension).group($scope.dcLine.sum).x(d3.time.scale().domain([$scope.dcLine.min, $scope.dcLine.max])).yAxisLabel($scope.dcLine.indexBy.sum).xAxisLabel($scope.dcLine.indexBy.dimension).renderArea(true).brushOn($scope.dcLine.brush).renderHorizontalGridLines(true).elasticY(true).elasticX(true).render();
         };
       }
     };

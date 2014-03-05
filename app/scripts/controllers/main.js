@@ -98,6 +98,7 @@
         var filter;
         filter = $filter('filter')($scope.sourceData, $scope.filter);
         if (filter.length > 0) {
+          console.log(filter);
           return $scope.rows = crossfilter(filter);
         } else {
           $log.info("Result not found");

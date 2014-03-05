@@ -22,15 +22,17 @@ controller('MainController', ['$rootScope','$scope','$filter','$log','Debug','da
       return
 
     $scope.createStructure = (item)->
-      if(item.type=='dc-pie')
-        if(item.indexBy.dimension isnt null and item.indexBy.sum isnt null)
-          item.dimension = $scope.rows.dimension((d)->
+	    if(item.type=='dc-pie')
+	      if(item.indexBy.dimension isnt null and item.indexBy.sum isnt null)
+
+		      item.dimension = $scope.rows.dimension((d)->
             return d[item.indexBy.dimension]
-          )
-          item.sum = item.dimension.group().reduceSum((d)->
+	        )
+		      item.sum = item.dimension.group().reduceSum((d)->
             return d[item.indexBy.sum]
-          )
-      if(item.type=='dc-line')
+		      )
+
+	    if(item.type=='dc-line')
         if(item.indexBy.dimension isnt null and item.indexBy.sum isnt null)
           item.dimension = $scope.rows.dimension((d)->
             return d[item.indexBy.dimension]
@@ -98,7 +100,7 @@ controller('MainController', ['$rootScope','$scope','$filter','$log','Debug','da
     $scope.setFilters = ()->
       filter = $filter('filter')($scope.sourceData, $scope.filter)
       if filter.length > 0
-        $scope.rows = crossfilter(filter)
+	      $scope.rows = crossfilter(filter)
       else
         $log.info("Result not found")
         $scope.rows = crossfilter($scope.sourceData)

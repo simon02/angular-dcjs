@@ -133,7 +133,7 @@
         dimensions: dimension,
         sum: measure
       };
-      scope.setMetrics = function() {};
+      scope.update = function() {};
       scope.create = function() {};
     }));
     it("should start directive", inject(function($compile) {
@@ -180,10 +180,10 @@
       scope.dcLineChart.width(750).height(200).dimension(scope.dcLine.dimension).group(scope.dcLine.sum).x(d3.time.scale().domain([scope.dcLine.minDate, scope.dcLine.maxDate])).yAxisLabel("Total").xAxisLabel("Data");
       return expect(scope.create).toHaveBeenCalled();
     });
-    return it("should call setMetrics method", function() {
-      spyOn(scope, 'setMetrics').andCallThrough();
-      scope.setMetrics();
-      return expect(scope.setMetrics).toHaveBeenCalled();
+    return it("should call update method", function() {
+      spyOn(scope, 'update').andCallThrough();
+      scope.update();
+      return expect(scope.update).toHaveBeenCalled();
     });
   });
 
