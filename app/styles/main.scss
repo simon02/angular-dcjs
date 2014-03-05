@@ -39,8 +39,31 @@ body {
   margin:20px 0 !important;
 }
 
-#pivottable{
+.pivot{
+  background: #e7e7e7;
   .label{
+    background: none !important;
     display: inline-block;
+    nobr{
+      padding:5px;
+      background: #006699;
+      color: #ffffff;
+    }
+  }
+
+  .pvtAxisContainer{
+    background: none !important;
+  }
+
+  .pvtFilterBox{
+    display: inline-block;
+  }
+
+  .pvtRenderer{
+    width:100px;
+  }
+
+  input, select{
+    @extend .form-control
   }
 }

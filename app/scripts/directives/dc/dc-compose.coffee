@@ -1,74 +1,79 @@
 "use strict"
 if not dc or not d3 or not crossfilter or not _
-  throw 'You need to load DC, D3, Crossfilter and Underscore library'
+	throw 'You need to load DC, D3, Crossfilter and Underscore library'
 
 angular.module('dcCompose',[]).
 
 directive "dcCompose", ()->
-  restrict: 'AC'
-  scope:
-    dcCompose: '='
-    dimensions: '='
-    measures: '='
-    filter: '='
-  templateUrl: 'dc/compose/template.html'
-  link: ($scope, element, attrs)->
-    attrs.$observe('id', (id)->
-      $scope.chartId = if id then id else 'dcComposeDefault'
-    )
+	restrict: 'AC'
+	scope:
+		dcCompose: '='
+		dimensions: '='
+		measures: '='
+		filter: '='
+	templateUrl: 'dc/compose/template.html'
+	link: ($scope, element, attrs)->
+		attrs.$observe('id', (id)->
+			$scope.chartId = if id then id else 'dcComposeDefault'
+		)
 
-    $scope.height = if attrs.height then attrs.height else 150
+		$scope.height = if attrs.height then attrs.height else 150
 
 
-    $scope.$watch('dimensions',(dim)->
-      if dim
-        $scope.dimFilters = dim
-    )
+		$scope.$watch('dimensions',(dim)->
+			if dim
+				$scope.dimFilters = dim
+		)
 
-    $scope.$watch('measures',(measure)->
-      if measure
-        $scope.measureFilters = measure
-    )
+		$scope.$watch('measures',(measure)->
+			if measure
+				$scope.measureFilters = measure
+		)
 
-    $scope.$watch('dcCompose', (dcCompose)->
-      if dcCompose
-        $scope.create()
-        return
-    )
+		$scope.$watch('dcCompose', (dcCompose)->
+			if dcCompose
+				$scope.create()
+				return
+		)
 
-    $scope.$watch('filter',(filter)->
-      if $scope.dcComposeChart
-        $scope.dcComposeChart.filterAll()
-        if filter
-          $scope.dcComposeChart.filter(filter)
-        $scope.dcComposeChart.redraw()
-    )
+		$scope.$watch('filter',(filter)->
+			if $scope.dcComposeChart
+				$scope.dcComposeChart.filterAll()
+				if filter
+					$scope.dcComposeChart.filter(filter)
+				$scope.dcComposeChart.redraw()
+		)
 
-    $scope.create = ()=>
-      $scope.dcComposeChart = dc.lineChart('#' + $scope.chartId)
-      $scope.dcComposeChart.
-      width(element.width()).
-      height($scope.height).
-      margins({top: 40, right: 50, bottom: 30, left: 60}).
-      dimension($scope.dcCompose.dimension).
-      group($scope.dcCompose.sum.object).
-      x(d3.time.scale().domain([$scope.dcCompose.min, $scope.dcCompose.max])).
-      renderArea(true).
-      renderHorizontalGridLines(true).
-      elasticY(true).
-      brushOn(true).
-      legend(dc.legend().x(element.width() - 50).y(10)).
-      title((d)->
-        return d.key
-      )
-      angular.forEach($scope.dcCompose.stack,(value)->
-        $scope.dcComposeChart.stack($scope.dcCompose.sum.object, value, (d)->
-          return d.value[value]
-        ).valueAccessor((d)->
-          return d.value[value]
-        )
-      )
+		$scope.dcCompose.update = ()->
+			$scope.create()
 
-      $scope.dcComposeChart.render()
-      return
-    return
+
+		$scope.create = ()=>
+			$scope.dcComposeChart = dc.compositeChart('#' + $scope.chartId)
+
+			lineCharts = []
+			angular.forEach($scope.dcCompose.sum.objects, (value)->
+				line = dc.lineChart($scope.dcComposeChart).
+					renderArea(true).
+					group(value.object, value.title)
+				lineCharts.push(line)
+				return
+			)
+
+
+			$scope.dcComposeChart.
+				width(element.width()).
+				height($scope.height).
+				dimension($scope.dcCompose.dimension).
+				group($scope.dcCompose.measure).
+				margins({top: 40, right: 50, bottom: 30, left: 60}).
+				x(d3.time.scale().domain([$scope.dcCompose.min, $scope.dcCompose.max])).
+				renderHorizontalGridLines(true).
+				elasticY(true).
+				brushOn($scope.dcCompose.brush).
+				legend(dc.legend().x(element.width() - 50).y(10)).
+				compose(lineCharts)
+
+			$scope.dcComposeChart.render()
+			return
+		return

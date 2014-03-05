@@ -20,6 +20,7 @@
         });
       };
       $scope.createStructure = function(item) {
+        var obj;
         if (item.type === 'dc-pie') {
           if (item.indexBy.dimension !== null && item.indexBy.sum !== null) {
             item.dimension = $scope.rows.dimension(function(d) {
@@ -47,34 +48,38 @@
             item.dimension = $scope.rows.dimension(function(d) {
               return d[item.indexBy.dimension];
             });
+            item.measure = item.dimension.group().reduceSum(function(d) {
+              return d[item.indexBy.measure];
+            });
+            obj = [];
+            angular.forEach(item.values, function(value) {
+              var group;
+              group = {};
+              group.title = value;
+              group.object = item.dimension.group().reduceSum(function(d) {
+                if (d[item.indexBy.sum] === value) {
+                  return d[item.indexBy.measure];
+                } else {
+                  return 0;
+                }
+              });
+              return obj.push(group);
+            });
             item.sum = {
               title: item.stack,
-              object: item.dimension.group().reduce(function(p, v) {
-                angular.forEach(item.stack, function(value) {
-                  if (v[item.indexBy.sum] === value) {
-                    return p[value] += +v[item.indexBy.sum];
-                  }
-                });
-                return p;
-              }, function(p, v) {
-                angular.forEach(item.stack, function(value) {
-                  if (v[item.indexBy.sum] === value) {
-                    return p[value] -= +v[item.indexBy.sum];
-                  }
-                });
-                return p;
-              }, function() {
-                var obj;
-                obj = {};
-                angular.forEach(item.stack, function(value) {
-                  return obj[value] = 0;
-                });
-                return obj;
-              })
+              objects: obj
             };
             item.min = item.dimension.bottom(1)[0][item.indexBy.dimension];
             item.max = item.dimension.top(1)[0][item.indexBy.dimension];
           }
+        }
+        if (item.type === 'pivot') {
+          /* TODO: try to find another solution for filtering*/
+
+          item.dimension = $scope.rows.dimension(function(d) {
+            return d[item.indexBy.dimension];
+          });
+          item.data = $scope.sourceData;
         }
         if (item.update) {
           item.update();
@@ -98,7 +103,6 @@
         var filter;
         filter = $filter('filter')($scope.sourceData, $scope.filter);
         if (filter.length > 0) {
-          console.log(filter);
           return $scope.rows = crossfilter(filter);
         } else {
           $log.info("Result not found");
@@ -119,55 +123,6 @@
         $scope.getParams(data, 'Datetime');
         $scope.getParams(data, 'Dimension');
         return $scope.getParams(data, 'Measure');
-      };
-      $scope.setChartDim = function() {
-        $scope.composeChartOpts = {
-          data: $scope.rows,
-          dimension: $scope.composeChartDim,
-          sum: {
-            title: ["HD", "SD"],
-            object: $scope.composeChartDim.group().reduce(function(p, v) {
-              if (v['DIMENSION:Asset/Content Flavor'] === 'HD') {
-                p.HD += +v['MEASURE:Customer Price'];
-              }
-              if (v['DIMENSION:Asset/Content Flavor'] === 'SD') {
-                p.SD += +v['MEASURE:Customer Price'];
-              }
-              return p;
-            }, function(p, v) {
-              if (v['DIMENSION:Asset/Content Flavor'] === 'HD') {
-                p.HD -= +v['MEASURE:Customer Price'];
-              }
-              if (v['DIMENSION:Asset/Content Flavor'] === 'SD') {
-                p.SD -= +v['MEASURE:Customer Price'];
-              }
-              return p;
-            }, function() {
-              return {
-                HD: 0,
-                SD: 0
-              };
-            })
-          },
-          min: $scope.composeChartDim.bottom(1)[0]['DATETIME:date'],
-          max: $scope.composeChartDim.top(1)[0]['DATETIME:date']
-        };
-        $scope.lineChartOpts = {
-          data: $scope.rows,
-          dimension: $scope.lineChartDim,
-          sum: $scope.lineChartDim.group().reduceSum(function(d) {
-            return d['MEASURE:Customer Price'];
-          }),
-          min: $scope.lineChartDim.bottom(1)[0]['DATETIME:date'],
-          max: $scope.lineChartDim.top(1)[0]['DATETIME:date']
-        };
-        return $scope.pieChartOpts = {
-          data: $scope.rows,
-          dimension: $scope.pieChartDim,
-          sum: $scope.pieChartDim.group().reduceSum(function(d) {
-            return d['MEASURE:Customer Price'];
-          })
-        };
       };
       $scope.getParams = function(data, index) {
         var items, pattern;

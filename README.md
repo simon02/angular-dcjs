@@ -55,6 +55,16 @@ Go to the application root ./angular-dcjs
 ### Dependency maintenance:
 To add new dependencies to the project, run "bower YOUR DEPENDENCY --save-dev".
 
+### Starting Application
+To start the app
+>grunt server
 
+Or if you want to start the server using the distribution package
+>grunt server:dist
 
+### Generating a Distribution Package
+Use the command
+>grunt build
+
+A "dist" folder will be created in your root folter of the project
 

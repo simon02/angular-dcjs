@@ -35,7 +35,7 @@
 			},
 			{
 				"gridster" : {
-					"sizeX": 2,
+					"sizeX": 3,
 					"sizeY": 1,
 					"row": 1,
 					"col": 0
@@ -44,9 +44,10 @@
 				"type":"dc-compose",
 				"indexBy":{
 					"dimension": "DATETIME:date",
-					"sum": "DIMENSION:Asset/Content Flavor"
+					"sum": "DIMENSION:Asset/Content Flavor",
+					"measure":"MEASURE:Customer Price"
 				},
-				"stack": ["HD","SD"],
+				"values": ["HD","SD"],
 				"dimension": {},
 				"sum": {}
 			},
@@ -97,6 +98,19 @@
 				},
 				"dimension": {},
 				"sum": {}
+			},
+			{
+				"gridster" : {
+					"sizeX": 3,
+					"sizeY": 1,
+					"row": 3,
+					"col": 0
+				},
+				"id": "grid6",
+				"type":"pivot",
+				"indexBy":{
+					"dimension": "DIMENSION:Title"
+				}
 			}
 		]
 	}

@@ -45,23 +45,24 @@
             return $scope.dcComposeChart.redraw();
           }
         });
+        $scope.dcCompose.update = function() {
+          return $scope.create();
+        };
         $scope.create = function() {
-          $scope.dcComposeChart = dc.lineChart('#' + $scope.chartId);
-          $scope.dcComposeChart.width(element.width()).height($scope.height).margins({
+          var lineCharts;
+          $scope.dcComposeChart = dc.compositeChart('#' + $scope.chartId);
+          lineCharts = [];
+          angular.forEach($scope.dcCompose.sum.objects, function(value) {
+            var line;
+            line = dc.lineChart($scope.dcComposeChart).renderArea(true).group(value.object, value.title);
+            lineCharts.push(line);
+          });
+          $scope.dcComposeChart.width(element.width()).height($scope.height).dimension($scope.dcCompose.dimension).group($scope.dcCompose.measure).margins({
             top: 40,
             right: 50,
             bottom: 30,
             left: 60
-          }).dimension($scope.dcCompose.dimension).group($scope.dcCompose.sum.object).x(d3.time.scale().domain([$scope.dcCompose.min, $scope.dcCompose.max])).renderArea(true).renderHorizontalGridLines(true).elasticY(true).brushOn(true).legend(dc.legend().x(element.width() - 50).y(10)).title(function(d) {
-            return d.key;
-          });
-          angular.forEach($scope.dcCompose.stack, function(value) {
-            return $scope.dcComposeChart.stack($scope.dcCompose.sum.object, value, function(d) {
-              return d.value[value];
-            }).valueAccessor(function(d) {
-              return d.value[value];
-            });
-          });
+          }).x(d3.time.scale().domain([$scope.dcCompose.min, $scope.dcCompose.max])).renderHorizontalGridLines(true).elasticY(true).brushOn($scope.dcCompose.brush).legend(dc.legend().x(element.width() - 50).y(10)).compose(lineCharts);
           $scope.dcComposeChart.render();
         };
       }
