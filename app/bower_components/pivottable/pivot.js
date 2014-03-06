@@ -938,14 +938,12 @@
           return _results;
         })();
         hasExcludedItem = false;
-        valueList = $("<div>").addClass('pvtFilterBox').css({
+        valueList = $("<div>").addClass('pvtFilterBox popover').css({
           "z-index": 100,
           "width": "280px",
-          "border": "1px solid gray",
-          "background": "white",
           "display": "none",
           "position": "absolute",
-          "padding": "20px"
+          "padding": "20px 5px"
         });
         valueList.append($("<div>").css({
           "text-align": "center",
@@ -969,7 +967,7 @@
           valueList.append(btns);
           checkContainer = $("<div>").css({
             "overflow": "scroll",
-            "width": "280px",
+            "width": "270px",
             "max-height": "200px"
           });
           _ref2 = keys.sort(naturalSort);
@@ -1004,9 +1002,10 @@
           "margin-bottom": 0
         }).append($("<button>").text("OK").bind("click", updateFilter)));
         showFilterList = function(e) {
+	        console.log(e);
           return valueList.css({
-            left: e.pageX,
-            top: e.pageY
+            left: e.currentTarget.parentElement.offsetLeft,
+	          top: e.currentTarget.parentElement.offsetTop + 30
           }).toggle();
         };
         triangleLink = $("<span class='pvtTriangle'>").html(" &#x25BE;").bind("click", showFilterList);

@@ -578,6 +578,7 @@ $.fn.pivotUI = (input, inputOpts, overwrite = false) ->
                     .append $("<button>").text("OK").bind "click", updateFilter
 
                 showFilterList = (e) ->
+	                  console.log e
                     valueList.css(left: e.pageX, top: e.pageY).toggle()
 
                 triangleLink = $("<span class='pvtTriangle'>").html(" &#x25BE;")

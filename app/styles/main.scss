@@ -40,6 +40,7 @@ body {
 }
 
 .pivot{
+  position:relative;
   background: #e7e7e7;
   .label{
     background: none !important;
@@ -52,18 +53,24 @@ body {
   }
 
   .pvtAxisContainer{
+    position: relative;
     background: none !important;
   }
 
   .pvtFilterBox{
     display: inline-block;
+
+    button{
+      margin:5px 2px;
+      @extend .btn, .btn-primary
+    }
   }
 
   .pvtRenderer{
     width:100px;
   }
 
-  input, select{
+  .pvtAggregator, .pvtRenderer{
     @extend .form-control
   }
 }
