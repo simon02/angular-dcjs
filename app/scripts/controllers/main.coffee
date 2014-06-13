@@ -96,12 +96,21 @@ controller('MainController', ['$rootScope','$scope','$filter','$log','Debug','da
 		$scope.retrieveData = ()->
 			dataAPI.getData().then((response)->
 				if response.data
-					response.data.forEach((d)->
-						d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
-						return
+					headers = _.first(response.data)
+					reworkedData = _.map(_.rest(response.data), (d)->
+						element = {}
+						d.forEach((value, index) ->
+							element[headers[index]] = value
+						)
+						element
 					)
+					#response.data.forEach((d)->
+					#	d['DATETIME:date'] = d3.time.format("%m/%d/%Y").parse(d['DATETIME:date'])
+					#	return
+					#)
 
-					$scope.sourceData = response.data
+					# $scope.sourceData = response.data
+					$scope.sourceData = reworkedData
 					$scope.getScreenParams()
 					$scope.identifyHeaders($scope.sourceData)
 					$scope.render()

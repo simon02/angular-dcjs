@@ -29,7 +29,7 @@
 				},
 				"id": "grid1",
 				"type":"dc-line",
-				"brush": false,
+				"brush": true,
 				"dimension": {},
 				"sum": {}
 			},
